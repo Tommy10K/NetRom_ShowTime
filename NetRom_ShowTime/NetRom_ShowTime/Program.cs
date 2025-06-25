@@ -1,4 +1,3 @@
-using NetRom_ShowTime.Client.Pages;
 using NetRom_ShowTime.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,7 +26,6 @@ app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
-    .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(NetRom_ShowTime.Client._Imports).Assembly);
+    .AddInteractiveWebAssemblyRenderMode();
 
 app.Run();

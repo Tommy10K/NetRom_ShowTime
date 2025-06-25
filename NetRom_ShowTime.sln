@@ -5,7 +5,7 @@ VisualStudioVersion = 17.13.35919.96 d17.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetRom_ShowTime", "NetRom_ShowTime\NetRom_ShowTime\NetRom_ShowTime.csproj", "{C3794D61-5EC6-482A-A56B-D6763FF1B980}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetRom_ShowTime.Client", "NetRom_ShowTime\NetRom_ShowTime.Client\NetRom_ShowTime.Client.csproj", "{66195E35-B8D3-48E6-AA94-152329F61A75}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShowTime.DataAccess", "ShowTimeDataAccess\ShowTime.DataAccess.csproj", "{C591A9CA-4BE1-43A9-90EC-CE856084FDE7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{C3794D61-5EC6-482A-A56B-D6763FF1B980}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3794D61-5EC6-482A-A56B-D6763FF1B980}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3794D61-5EC6-482A-A56B-D6763FF1B980}.Release|Any CPU.Build.0 = Release|Any CPU
-		{66195E35-B8D3-48E6-AA94-152329F61A75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{66195E35-B8D3-48E6-AA94-152329F61A75}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{66195E35-B8D3-48E6-AA94-152329F61A75}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{66195E35-B8D3-48E6-AA94-152329F61A75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C591A9CA-4BE1-43A9-90EC-CE856084FDE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C591A9CA-4BE1-43A9-90EC-CE856084FDE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C591A9CA-4BE1-43A9-90EC-CE856084FDE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C591A9CA-4BE1-43A9-90EC-CE856084FDE7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
