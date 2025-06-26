@@ -23,6 +23,7 @@ namespace ShowTime.DataAccess.Configurations
                 .HasMaxLength(255);
             builder.Property(a => a.StartDate).IsRequired();
             builder.Property(a => a.EndDate).IsRequired();
+            builder.Property(a => a.SplashArt).IsRequired();
             builder.Property(a => a.Capacity).IsRequired();
         }
     }

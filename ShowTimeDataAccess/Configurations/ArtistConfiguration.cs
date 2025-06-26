@@ -18,6 +18,11 @@ namespace ShowTime.DataAccess.Configurations
             builder.Property(a => a.Name)
                 .IsRequired()
                 .HasMaxLength(255);
+            builder.Property(a => a.Image)
+                .IsRequired();
+            builder.Property(a => a.Genre)
+                .IsRequired()
+                .HasMaxLength(100);
 
             builder.HasMany(a => a.Festivals)
                 .WithMany(f => f.Artists)

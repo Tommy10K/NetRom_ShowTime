@@ -18,6 +18,16 @@ namespace ShowTime.DataAccess.Configurations
             builder.Property(l => l.Stage)
                 .IsRequired()
                 .HasMaxLength(100);
+            builder.Property(l => l.StartTime)
+                .IsRequired();
+
+            builder.HasOne(l => l.Artist)
+                .WithMany(a => a.Lineups)
+                .HasForeignKey(l => l.ArtistId);
+
+            builder.HasOne(l => l.Festival)
+                .WithMany(f => f.Lineups)
+                .HasForeignKey(l => l.FestivalId);
         }
     }
 }
