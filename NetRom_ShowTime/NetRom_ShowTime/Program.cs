@@ -1,10 +1,16 @@
 using NetRom_ShowTime.Components;
+using ShowTime.DataAccess;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
+
+var  connectionString = builder.Configuration.GetConnectionString("ShowTimeContext");
+builder.Services.AddDbContext<ShowTimeDbContext>(options =>
+    options.UseSqlServer(connectionString));
 
 var app = builder.Build();
 
