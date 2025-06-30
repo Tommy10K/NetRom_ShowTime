@@ -1,6 +1,11 @@
 using NetRom_ShowTime.Components;
 using ShowTime.DataAccess;
 using Microsoft.EntityFrameworkCore;
+using ShowTime.DataAccess.Models;
+using ShowTime.DataAccess.Repositories.Abstractions;
+using ShowTime.DataAccess.Repositories.Implementations;
+using ShowTime.BusinessLogic.Abstractions;
+using ShowTime.BusinessLogic.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +16,9 @@ builder.Services.AddRazorComponents()
 var  connectionString = builder.Configuration.GetConnectionString("ShowTimeContext");
 builder.Services.AddDbContext<ShowTimeDbContext>(options =>
     options.UseSqlServer(connectionString));
+
+builder.Services.AddTransient<IRepository<Artist>, GenericRepository<Artist>>();
+builder.Services.AddTransient<IArtistService, ArtistService>();
 
 var app = builder.Build();
 

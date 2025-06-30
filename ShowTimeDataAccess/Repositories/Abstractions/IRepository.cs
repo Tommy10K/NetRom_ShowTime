@@ -8,9 +8,10 @@ namespace ShowTime.DataAccess.Repositories.Abstractions
 {
     public interface IRepository<T> where T : class
     {
-        public Task <T?> getByID(int id);
-        public Task deleteByID(int id);
-        public Task add(T entity);
-        public Task update(T entity);
+        Task<T?> GetByIdAsync(int id);
+        Task<IEnumerable<T>> GetAllAsync();
+        Task AddAsync(T entity);
+        Task UpdateAsync(T entity);
+        Task DeleteAsync(int id);
     }
 }
