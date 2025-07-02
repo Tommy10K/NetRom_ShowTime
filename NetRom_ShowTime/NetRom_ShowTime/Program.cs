@@ -11,7 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveWebAssemblyComponents();
+.AddInteractiveServerComponents()
+.AddInteractiveWebAssemblyComponents();
 
 var  connectionString = builder.Configuration.GetConnectionString("ShowTimeContext");
 builder.Services.AddDbContext<ShowTimeDbContext>(options =>
@@ -19,6 +20,8 @@ builder.Services.AddDbContext<ShowTimeDbContext>(options =>
 
 builder.Services.AddTransient<IRepository<Artist>, GenericRepository<Artist>>();
 builder.Services.AddTransient<IArtistService, ArtistService>();
+
+builder.Services.AddBlazorBootstrap();
 
 var app = builder.Build();
 
@@ -40,6 +43,7 @@ app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
-    .AddInteractiveWebAssemblyRenderMode();
+.AddInteractiveServerRenderMode()
+.AddInteractiveWebAssemblyRenderMode();
 
 app.Run();

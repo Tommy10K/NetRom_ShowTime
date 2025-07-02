@@ -1,7 +1,10 @@
 ﻿@page "/artists"
 @using ShowTime.BusinessLogic.Abstractions
 @using ShowTime.BusinessLogic.Dtos
+@using NetRom_ShowTime.Components
+@using BlazorBootstrap
 @inject IArtistService ArtistService
+@rendermode InteractiveServer
 
 <h3>Add new artist</h3>
 <EditForm Model="newArtist" OnValidSubmit="AddArtist" FormName="Add Artist Form">
@@ -16,6 +19,16 @@
 
     <button type="submit" class="btn btn-primary mt-2 mb-3">Submit</button>
 </EditForm>
+
+<BlazorBootstrap.Modal @ref="modal" Title="Modal title">
+    <BodyTemplate>
+        Modal body text goes here.
+    </BodyTemplate>
+    <FooterTemplate>
+        <Button Color="ButtonColor.Secondary" @onclick="async() => await OnHideModalClick()">Close</Button>
+        <Button Color="ButtonColor.Primary">Save changes</Button>
+    </FooterTemplate>
+</BlazorBootstrap.Modal>
 
 <h3>Artist</h3>
 
@@ -42,10 +55,15 @@ else
                         <p class="card-text text-muted mb-3">@artist.Genre</p>
 
                         <button type="button"
-                                class="btn btn-sm btn-danger mt-auto"
+                                class="btn btn-sm btn-danger mt-auto mb-2"
                                 @onclick="async () => await DeleteArtist(artist.Id)">
                             Delete
                         </button>
+
+                        <Button Color="ButtonColor.Success" Size="ButtonSize.Small"
+                                Class="mt-auto mb-2" @onclick="async() => await OnShowModalClick()">
+                            Edit
+                        </Button>
                     </div>
                 </div>
             </div>
@@ -54,10 +72,27 @@ else
 }
 
 @code {
-    private IList<ArtistGetDto> artists = new List<ArtistGetDto>();
-
     [SupplyParameterFromForm]
     private ArtistCreateDto newArtist { get; set; } = new();
+
+    private IList<ArtistGetDto> artists = new List<ArtistGetDto>();
+    private Modal? modal;
+
+    private async Task OnShowModalClick()
+    {
+        if (modal is null)
+            return;
+
+        await modal.ShowAsync();
+    }
+
+    private async Task OnHideModalClick()
+    {
+        if (modal is null)
+            return;
+
+        await modal.HideAsync();
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -79,7 +114,6 @@ else
     {
         Console.WriteLine($"Deleting artist {id}…");
         await ArtistService.DeleteArtistAsync(id);
-        Console.WriteLine("Deleted. Reloading list…");
         artists = await ArtistService.GetAllArtistsAsync();
     }
 }
