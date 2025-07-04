@@ -1,0 +1,49 @@
+﻿@page "/register"
+@using Microsoft.AspNetCore.Authentication
+@using ShowTime.BusinessLogic.Abstractions
+@using ShowTime.BusinessLogic.Dtos
+@using NetRom_ShowTime.Components
+@using BlazorBootstrap
+@using Microsoft.AspNetCore.Components.Forms
+@using System.Security.Claims
+@using System
+@using ShowTime.DataAccess.Models
+@using Microsoft.AspNetCore.Authentication.Cookies;
+
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+@rendermode InteractiveServer
+
+<h3>Register</h3>
+
+<EditForm Model="newUser" OnValidSubmit="AddUser">
+    <DataAnnotationsValidator />
+
+    <label for="email">Email:</label>
+    <InputText id="email" @bind-Value="newUser.Email" class="form-control mb-2" />
+    <ValidationMessage For="@(() => newUser.Email)" />
+
+    <label for="password">Password:</label>
+    <InputText id="password" type="password" @bind-Value="newUser.Password" class="form-control mb-2" />
+    <ValidationMessage For="@(() => newUser.Password)" />
+
+    <button type="submit" class="btn btn-primary mt-2 mb-3">Register</button>
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm]
+    private UserCreateDto newUser { get; set; } = new();
+
+    private async Task AddUser()
+    {
+        if (string.IsNullOrWhiteSpace(newUser.Email) || string.IsNullOrWhiteSpace(newUser.Password))
+        {
+            return;
+        }
+        await UserService.AddUserAsync(newUser);
+        newUser = new();
+
+        NavigationManager.NavigateTo("/login");
+    }
+}

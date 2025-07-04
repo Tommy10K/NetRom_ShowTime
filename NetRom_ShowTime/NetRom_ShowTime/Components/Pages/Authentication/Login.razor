@@ -1,0 +1,72 @@
+﻿@page "/login"
+@using Microsoft.AspNetCore.Authentication
+@using ShowTime.BusinessLogic.Abstractions
+@using ShowTime.BusinessLogic.Dtos
+@using NetRom_ShowTime.Components
+@using BlazorBootstrap
+@using Microsoft.AspNetCore.Components.Forms
+@using System.Security.Claims
+@using System
+@using ShowTime.DataAccess.Models
+@using Microsoft.AspNetCore.Authentication.Cookies;
+
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+@rendermode InteractiveServer
+
+<h3>Login</h3>
+
+<EditForm Model="newUser" OnValidSubmit="Authenticate" FormName="Login">
+    <DataAnnotationsValidator />
+
+    <label for="email">Email:</label>
+    <InputText id="email" @bind-Value="newUser.Email" class="form-control mb-2" />
+    <ValidationMessage For="@(() => newUser.Email)" />
+
+    <label for="password">Password:</label>
+    <InputText id="password" type="password" @bind-Value="newUser.Password" class="form-control mb-2" />
+    <ValidationMessage For="@(() => newUser.Password)" />
+
+    <button type="submit" class="btn btn-primary mt-2 mb-3">Log In</button>
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm]
+    private LogInDto newUser { get; set; } = new();
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    private async Task Authenticate()
+    {
+        try
+        {
+            var response = await UserService.LogInAsync(newUser);
+
+            if (response != null)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Email, newUser.Email),
+                    new Claim(ClaimTypes.Role, Enum.GetName(typeof(Role), response.Role) ?? nameof(Role.User)),
+                };
+
+                var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var claimsPrincipal = new ClaimsPrincipal(claimIdentity);
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                Console.WriteLine("Authentication response is null.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Authentication failed: {ex.Message}");
+        }
+    }
+}

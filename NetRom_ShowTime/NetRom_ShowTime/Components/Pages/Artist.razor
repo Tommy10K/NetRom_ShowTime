@@ -133,8 +133,8 @@ else
     private ArtistCreateDto newArtist { get; set; } = new();
     private ArtistUpdateDto editArtist = new();
     private List<string> genres = new();
-    private string genreFilter = "";
-    private string nameFilter = "";
+    private string genreFilter = string.Empty;
+    private string nameFilter = string.Empty;
 
     private IList<ArtistGetDto> artists = new List<ArtistGetDto>();
     private Modal? modal;
