@@ -20,6 +20,8 @@ builder.Services.AddDbContext<ShowTimeDbContext>(options =>
 
 builder.Services.AddTransient<IRepository<Artist>, GenericRepository<Artist>>();
 builder.Services.AddTransient<IArtistService, ArtistService>();
+builder.Services.AddTransient<IRepository<Festival>, GenericRepository<Festival>>();
+builder.Services.AddTransient<IFestivalService, FestivalService>();
 
 builder.Services.AddBlazorBootstrap();
 

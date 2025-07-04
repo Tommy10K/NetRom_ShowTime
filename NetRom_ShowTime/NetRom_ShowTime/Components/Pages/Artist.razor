@@ -3,34 +3,90 @@
 @using ShowTime.BusinessLogic.Dtos
 @using NetRom_ShowTime.Components
 @using BlazorBootstrap
+@using Microsoft.AspNetCore.Components.Forms
+
 @inject IArtistService ArtistService
+
 @rendermode InteractiveServer
 
 <h3>Add new artist</h3>
 <EditForm Model="newArtist" OnValidSubmit="AddArtist" FormName="Add Artist Form">
+    <DataAnnotationsValidator />
+
     <label for="name">Name:</label>
     <InputText id="name" @bind-Value="newArtist.Name" class="form-control mb-2" />
+    <ValidationMessage For="@(() => newArtist.Name)" />
 
     <label for="genre">Genre:</label>
     <InputText id="genre" @bind-Value="newArtist.Genre" class="form-control mb-2" />
+    <ValidationMessage For="@(() => newArtist.Genre)" />
 
     <label for="image">Image:</label>
     <InputText id="image" @bind-Value="newArtist.Image" class="form-control mb-2" />
+    <ValidationMessage For="@(() => newArtist.Image)" />
 
     <button type="submit" class="btn btn-primary mt-2 mb-3">Submit</button>
 </EditForm>
 
-<BlazorBootstrap.Modal @ref="modal" Title="Modal title">
+<BlazorBootstrap.Modal @ref="modal" Title="Edit Artist">
     <BodyTemplate>
-        Modal body text goes here.
+        <EditForm Model="editArtist" OnValidSubmit="SaveEdit">
+            <DataAnnotationsValidator />
+
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <InputText @bind-Value="editArtist.Name" class="form-control" />
+                <ValidationMessage For="@(() => editArtist.Name)" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Genre</label>
+                <InputText @bind-Value="editArtist.Genre" class="form-control" />
+                <ValidationMessage For="@(() => editArtist.Genre)" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Image URL</label>
+                <InputText @bind-Value="editArtist.Image" class="form-control" />
+                <ValidationMessage For="@(() => editArtist.Image)" />
+            </div>
+
+            <div class="d-flex justify-content-center mt-3 gap-3">
+                <button type="submit" class="btn btn-primary">
+                    Save
+                </button>
+                <button type="button" class="btn btn-secondary" @onclick="OnHideModalClick">
+                    Cancel
+                </button>
+            </div>
+        </EditForm>
     </BodyTemplate>
-    <FooterTemplate>
-        <Button Color="ButtonColor.Secondary" @onclick="async() => await OnHideModalClick()">Close</Button>
-        <Button Color="ButtonColor.Primary">Save changes</Button>
-    </FooterTemplate>
 </BlazorBootstrap.Modal>
 
-<h3>Artist</h3>
+<div class="row mb-2">
+    <div class="row mb-1">
+        <div class="col-md-4 mb-2">
+            <InputText @bind-Value="nameFilter"
+                       placeholder="Search by name..."
+                       class="form-control" />
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <label for="genreFilter" class="form-label">Filter by Genre:</label>
+        <InputSelect id="genreFilter"
+                     @bind-Value="genreFilter"
+                     class="form-control">
+            <option value="">All Genres</option>
+            @foreach (var g in genres)
+            {
+                <option value="@g">@g</option>
+            }
+        </InputSelect>
+    </div>
+</div>
+
+<h3>Artists</h3>
 
 @if (artists.Count == 0)
 {
@@ -39,7 +95,8 @@
 else
 {
     <div class="row">
-        @foreach (var artist in artists)
+        @foreach (var artist in artists.Where(a => string.IsNullOrWhiteSpace(genreFilter) || a.Genre == genreFilter)
+                                        .Where(a => string.IsNullOrWhiteSpace(nameFilter) || a.Name.Contains(nameFilter, StringComparison.OrdinalIgnoreCase)))
         {
             <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
                 <div class="card h-80">
@@ -61,7 +118,7 @@ else
                         </button>
 
                         <Button Color="ButtonColor.Success" Size="ButtonSize.Small"
-                                Class="mt-auto mb-2" @onclick="async() => await OnShowModalClick()">
+                                Class="mt-auto mb-2" @onclick="async() => await OnShowModalClick(artist)">
                             Edit
                         </Button>
                     </div>
@@ -74,14 +131,23 @@ else
 @code {
     [SupplyParameterFromForm]
     private ArtistCreateDto newArtist { get; set; } = new();
+    private ArtistUpdateDto editArtist = new();
+    private List<string> genres = new();
+    private string genreFilter = "";
+    private string nameFilter = "";
 
     private IList<ArtistGetDto> artists = new List<ArtistGetDto>();
     private Modal? modal;
 
-    private async Task OnShowModalClick()
+    private async Task OnShowModalClick(ArtistGetDto a)
     {
         if (modal is null)
             return;
+
+        editArtist.Id = a.Id;
+        editArtist.Name = a.Name;
+        editArtist.Genre = a.Genre;
+        editArtist.Image = a.Image;
 
         await modal.ShowAsync();
     }
@@ -97,6 +163,23 @@ else
     protected override async Task OnInitializedAsync()
     {
         artists = await ArtistService.GetAllArtistsAsync();
+
+        genres = artists
+         .Select(a => a.Genre)
+         .Distinct(StringComparer.OrdinalIgnoreCase)
+         .OrderBy(g => g)
+         .ToList();
+    }
+
+    private async Task Refresh()
+    {
+        artists = await ArtistService.GetAllArtistsAsync();
+
+        genres = artists
+        .Select(a => a.Genre)
+        .Distinct(StringComparer.OrdinalIgnoreCase)
+        .OrderBy(g => g)
+        .ToList();
     }
 
     private async Task AddArtist()
@@ -107,13 +190,23 @@ else
         }
         await ArtistService.AddArtistAsync(newArtist);
         newArtist = new();
-        artists = await ArtistService.GetAllArtistsAsync();
+        await Refresh();
     }
 
     private async Task DeleteArtist(int id)
     {
         Console.WriteLine($"Deleting artist {id}…");
         await ArtistService.DeleteArtistAsync(id);
-        artists = await ArtistService.GetAllArtistsAsync();
+        await Refresh();
+    }
+
+    private async Task SaveEdit()
+    {
+        if (modal is null)
+            return;
+        Console.WriteLine($"Saving updated artist…");
+        await ArtistService.UpdateArtistAsync(editArtist);
+        await Refresh();
+        await modal.HideAsync();
     }
 }

@@ -1,0 +1,151 @@
+﻿@page "/festivals/{Id:int}"
+@using ShowTime.BusinessLogic.Abstractions
+@using ShowTime.BusinessLogic.Dtos
+@using NetRom_ShowTime.Components
+@using BlazorBootstrap
+@using Microsoft.AspNetCore.Components.Forms
+
+@inject IFestivalService FestivalService
+@inject NavigationManager Nav
+
+@rendermode InteractiveServer
+
+<h3>Festival Details</h3>
+
+@if (festival is null)
+{
+    <p><em>Loading…</em></p>
+}
+else
+{
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-5 mb-4">
+                <div class="card h-120">
+                    <div class="ratio" style="--bs-aspect-ratio:130%;">
+                        <img src="@festival.SplashArt"
+                             class="card-img-top"
+                             style="object-fit: cover;"
+                             alt="@festival.Name" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-7 mb-4">
+                <div class="card h-120">
+                    <div class="card-body">
+                        <h3 class="card-title">@festival.Name</h3>
+                        <p class="card-text"><strong>Location:</strong> @festival.Location</p>
+                        <p class="card-text mb-1">
+                            <strong>Start Date:</strong> @festival.StartDate:yyyy-MM-dd
+                        </p>
+                        <p class="card-text mb-3">
+                            <strong>End Date:</strong> @festival.EndDate:yyyy-MM-dd
+                        </p>
+                        <p class="card-text"><strong>Capacity:</strong> @festival.Capacity</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (!isEditing)
+    {
+        <div class="d-flex gap-3 mb-4">
+            <button class="btn btn-primary" @onclick="EnableEdit">Edit</button>
+            <button class="btn btn-danger" @onclick="DeleteFestival">Delete</button>
+        </div>
+    }
+    else
+    {
+        <EditForm Model="editFestival" OnValidSubmit="SaveEdit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <InputText @bind-Value="editFestival.Name" class="form-control" />
+                <ValidationMessage For="@(() => editFestival.Name)" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Location</label>
+                <InputText @bind-Value="editFestival.Location" class="form-control" />
+                <ValidationMessage For="@(() => editFestival.Location)" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Start Date</label>
+                <InputDate @bind-Value="editFestival.StartDate"
+                           class="form-control" />
+                <ValidationMessage For="@(() => editFestival.StartDate)" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">End Date</label>
+                <InputDate @bind-Value="editFestival.EndDate"
+                           class="form-control" />
+                <ValidationMessage For="@(() => editFestival.EndDate)" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Splash Art URL</label>
+                <InputText @bind-Value="editFestival.SplashArt" class="form-control" />
+                <ValidationMessage For="@(() => editFestival.SplashArt)" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Capacity</label>
+                <InputNumber @bind-Value="editFestival.Capacity" class="form-control" />
+                <ValidationMessage For="@(() => editFestival.Capacity)" />
+            </div>
+
+            <div class="d-flex gap-3">
+                <button type="submit" class="btn btn-success">Save</button>
+                <button type="button" class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
+            </div>
+        </EditForm>
+    }
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    private FestivalGetDto? festival;
+    private FestivalUpdateDto editFestival = new();
+    private bool isEditing;
+
+    protected override async Task OnInitializedAsync()
+    {
+        festival = await FestivalService.GetFestivalByIdAsync(Id);
+        if (festival is null)
+            Nav.NavigateTo("/festivals");
+    }
+
+    private void EnableEdit()
+    {
+        if (festival == null) return;
+        isEditing = true;
+        editFestival = new FestivalUpdateDto
+        {
+            Id = festival.Id,
+            Name = festival.Name,
+            Location = festival.Location,
+            StartDate = festival.StartDate,
+            EndDate = festival.EndDate,
+            SplashArt = festival.SplashArt,
+            Capacity = festival.Capacity
+        };
+    }
+
+    private async Task SaveEdit()
+    {
+        await FestivalService.UpdateFestivalAsync(editFestival);
+        // reload details
+        festival = await FestivalService.GetFestivalByIdAsync(Id);
+        isEditing = false;
+    }
+
+    private void CancelEdit() => isEditing = false;
+
+    private async Task DeleteFestival()
+    {
+        await FestivalService.DeleteFestivalAsync(Id);
+        Nav.NavigateTo("/festivals");
+    }
+}

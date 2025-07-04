@@ -72,26 +72,16 @@ public class ArtistService : IArtistService
         }
     }
 
-    public async Task UpdateArtistAsync(ArtistUpdateDto artistUpdateDto)
+    public async Task UpdateArtistAsync(ArtistUpdateDto dto)
     {
-        try
-        {
-            var artist = await _artistRepository.GetByIdAsync(artistUpdateDto.Id);
-            if (artist == null) throw new Exception("Artist not found.");
+        var artist = await _artistRepository.GetByIdAsync(dto.Id)
+                     ?? throw new KeyNotFoundException($"Artist {dto.Id} not found");
 
-            var updatedArtist = new Artist
-            {
-                Id = artist.Id,
-                Name = artistUpdateDto.Name ?? artist.Name,
-                Image = artistUpdateDto.Image ?? artist.Image,
-                Genre = artistUpdateDto.Genre ?? artist.Genre
-            };
-            await _artistRepository.UpdateAsync(updatedArtist);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("An error occurred while updating the artist.", ex);
-        }
+        artist.Name = dto.Name;
+        artist.Genre = dto.Genre;
+        artist.Image = dto.Image;
+
+        await _artistRepository.UpdateAsync(artist);
     }
 
     public async Task DeleteArtistAsync(int id)
