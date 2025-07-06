@@ -1,20 +1,27 @@
-using NetRom_ShowTime.Components;
-using ShowTime.DataAccess;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using NetRom_ShowTime.Components;
+using ShowTime.BusinessLogic.Abstractions;
+using ShowTime.BusinessLogic.Dtos;
+using ShowTime.BusinessLogic.Services;
+using ShowTime.DataAccess;
 using ShowTime.DataAccess.Models;
 using ShowTime.DataAccess.Repositories.Abstractions;
 using ShowTime.DataAccess.Repositories.Implementations;
-using ShowTime.BusinessLogic.Abstractions;
-using ShowTime.BusinessLogic.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddRazorPages();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
 .AddInteractiveServerComponents()
 .AddInteractiveWebAssemblyComponents();
 
+builder.Services.AddHttpClient();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -55,14 +62,42 @@ else
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
+app.UseRouting();
 app.UseAntiforgery();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapPost("/api/login", async (
+      LogInDto dto,
+      IUserService userService,
+      HttpContext http
+    ) =>
+{
+    var user = await userService.LogInAsync(dto);
+    if (user == null)
+        return Results.Unauthorized();
+
+    var claims = new[]
+    {
+      new Claim(ClaimTypes.Email, user.Email),
+      new Claim(ClaimTypes.Role,  user.Role.ToString())
+    };
+    var principal = new ClaimsPrincipal(
+       new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
+
+    await http.SignInAsync(
+      CookieAuthenticationDefaults.AuthenticationScheme,
+      principal,
+      new AuthenticationProperties { IsPersistent = true });
+
+    return Results.Ok();
+});
+
+app.MapRazorPages();
 app.MapRazorComponents<App>()
-.AddInteractiveServerRenderMode()
-.AddInteractiveWebAssemblyRenderMode();
+.AddInteractiveServerRenderMode();
+
+app.MapFallbackToFile("index.html");
 
 app.Run();

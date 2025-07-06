@@ -7,12 +7,19 @@
 
     <main>
         <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+            <AuthorizeView>
+                <NotAuthorized>
+                    <NavLink href="/login" class="nav-link" ForceLoad="true">
+                        Login
+                    </NavLink>
+                </NotAuthorized>
+                <Authorized>
+                    <NavLink href="/Logout" class="nav-link" ForceLoad="true">
+                        Logout
+                    </NavLink>
+                </Authorized>
+            </AuthorizeView>
         </div>
-
-        <AuthorizeView>
-            <NotAuthorized><a href="/auth"></a></NotAuthorized>
-        </AuthorizeView>
 
         <article class="content px-4">
             @Body

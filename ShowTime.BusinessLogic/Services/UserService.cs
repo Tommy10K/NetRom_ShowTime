@@ -24,9 +24,13 @@ namespace ShowTime.BusinessLogic.Services
             try
             {
                 var users = await _userRepository.GetAllAsync();
-                var foundUser = users.FirstOrDefault(u => u.Email == dto.Email && u.Password == dto.Password);
+                var foundUser = users.FirstOrDefault(u => u.Email == dto.Email);
                 
                 if (foundUser == null) return null;
+
+                if (!BCrypt.Net.BCrypt.Verify(dto.Password, foundUser.Password))
+                    return null;
+
                 return new UserGetDto
                 {
                     Id = foundUser.Id,
@@ -81,12 +85,19 @@ namespace ShowTime.BusinessLogic.Services
 
         public async Task AddUserAsync(UserCreateDto newUser)
         {
+            var users = await _userRepository.GetAllAsync();
+            var exists = users.FirstOrDefault(u => u.Email == newUser.Email);
+
+            if (exists != null)
+                throw new Exception("Email already in use.");
             try
             {
+                var hash = BCrypt.Net.BCrypt.HashPassword(newUser.Password);
+
                 var user = new User
                 {
                     Email = newUser.Email,
-                    Password = newUser.Password,
+                    Password = hash,
                     Role = newUser.Role
                 };
                 await _userRepository.AddAsync(user);
@@ -97,9 +108,16 @@ namespace ShowTime.BusinessLogic.Services
             }
         }
 
-        Task<UserGetDto> IUserService.GetUserByIdAsync(int userId)
+        public async Task DeleteUserAsync(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _userRepository.DeleteAsync(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while deleting the user with ID {id}.", ex);
+            }
         }
     }
 }

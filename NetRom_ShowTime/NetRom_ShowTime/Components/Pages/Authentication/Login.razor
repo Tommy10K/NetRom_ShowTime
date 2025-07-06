@@ -12,8 +12,7 @@
 
 @inject IUserService UserService
 @inject NavigationManager NavigationManager
-
-@rendermode InteractiveServer
+@inject HttpClient Http
 
 <h3>Login</h3>
 
@@ -35,38 +34,17 @@
     [SupplyParameterFromForm]
     private LogInDto newUser { get; set; } = new();
 
-    [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = default!;
-
     private async Task Authenticate()
     {
-        try
+        var url = NavigationManager.BaseUri.TrimEnd('/') + "/api/login";
+        var resp = await Http.PostAsJsonAsync(url, newUser);
+        if (resp.IsSuccessStatusCode)
         {
-            var response = await UserService.LogInAsync(newUser);
-
-            if (response != null)
-            {
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Email, newUser.Email),
-                    new Claim(ClaimTypes.Role, Enum.GetName(typeof(Role), response.Role) ?? nameof(Role.User)),
-                };
-
-                var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var claimsPrincipal = new ClaimsPrincipal(claimIdentity);
-
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
-
-                NavigationManager.NavigateTo("/");
-            }
-            else
-            {
-                Console.WriteLine("Authentication response is null.");
-            }
+            NavigationManager.NavigateTo("/", forceLoad: true);
         }
-        catch (Exception ex)
+        else
         {
-            Console.WriteLine($"Authentication failed: {ex.Message}");
+            Console.WriteLine("Login failed. Please check your credentials.");
         }
     }
 }

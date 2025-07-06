@@ -17,6 +17,11 @@
 
 <h3>Register</h3>
 
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
 <EditForm Model="newUser" OnValidSubmit="AddUser">
     <DataAnnotationsValidator />
 
@@ -34,6 +39,7 @@
 @code {
     [SupplyParameterFromForm]
     private UserCreateDto newUser { get; set; } = new();
+    string errorMessage = string.Empty;
 
     private async Task AddUser()
     {
@@ -41,9 +47,15 @@
         {
             return;
         }
-        await UserService.AddUserAsync(newUser);
-        newUser = new();
-
-        NavigationManager.NavigateTo("/login");
+        try
+        {
+            await UserService.AddUserAsync(newUser);
+            newUser = new UserCreateDto();
+            NavigationManager.NavigateTo("/login");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
     }
 }

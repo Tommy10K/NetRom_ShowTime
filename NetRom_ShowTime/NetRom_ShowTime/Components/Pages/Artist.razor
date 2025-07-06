@@ -188,6 +188,7 @@ else
         {
             return;
         }
+        Console.WriteLine($"Adding artist");
         await ArtistService.AddArtistAsync(newArtist);
         newArtist = new();
         await Refresh();

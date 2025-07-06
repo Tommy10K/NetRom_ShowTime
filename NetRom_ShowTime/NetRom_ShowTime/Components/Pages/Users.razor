@@ -1,0 +1,87 @@
+﻿@page "/users"
+@using ShowTime.BusinessLogic.Abstractions
+@using ShowTime.BusinessLogic.Dtos
+@inject IUserService UserService
+@inject IJSRuntime JS
+@rendermode InteractiveServer
+
+<h3>All Users</h3>
+
+<div class="row mb-3">
+    <div class="col-md-3">
+        <label for="sortBy" class="form-label">Sort by:</label>
+        <select id="sortBy"
+                class="form-select"
+                @bind="sortBy">
+            <option value="Id">ID</option>
+            <option value="Email">Email</option>
+        </select>
+    </div>
+</div>
+
+@if (users.Count == 0)
+{
+    <p>No users registered</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Role</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in sortedUsers)
+                {
+                    <tr>
+                        <td>@user.Id</td>
+                        <td>@user.Email</td>
+                        <td>@user.Role</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger"
+                                    @onclick="() => ConfirmDelete(user.Id, user.Email)">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private IList<UserGetDto> users = new List<UserGetDto>();
+    private string sortBy = "Id";
+
+    private IEnumerable<UserGetDto> sortedUsers => sortBy switch
+    {
+        "Email" => users.OrderBy(u => u.Email, StringComparer.OrdinalIgnoreCase),
+        _       => users.OrderBy(u => u.Id)
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var list = await UserService.GetAllUsersAsync();
+        users = list.OrderBy(u => u.Id).ToList();
+    }
+
+    private async Task ConfirmDelete(int id, string email)
+    {
+        var ok = await JS.InvokeAsync<bool>(
+            "confirm", 
+            $"Are you sure you want to delete user “{email}”?"
+        );
+        if (!ok) return;
+
+        await UserService.DeleteUserAsync(id);
+
+        var list = await UserService.GetAllUsersAsync();
+        users = list.OrderBy(u => u.Id).ToList();
+    }
+}
