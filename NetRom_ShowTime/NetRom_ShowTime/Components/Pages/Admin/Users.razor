@@ -1,9 +1,13 @@
 ﻿@page "/users"
 @using ShowTime.BusinessLogic.Abstractions
 @using ShowTime.BusinessLogic.Dtos
+@using Microsoft.AspNetCore.Authorization
+
 @inject IUserService UserService
 @inject IJSRuntime JS
 @rendermode InteractiveServer
+
+@attribute [Authorize(Roles = "Admin")]
 
 <h3>All Users</h3>
 

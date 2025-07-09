@@ -15,6 +15,7 @@ namespace ShowTime.BusinessLogic.Abstractions
     public interface IUserService
     {
         Task<UserGetDto?> LogInAsync(LogInDto dto);
+        Task<LoginResponseDto?> LogInAsyncR(LogInDto dto);
         Task<UserGetDto?> GetUserByIdAsync(int userId);
         Task<IList<UserGetDto>> GetAllUsersAsync();
         Task AddUserAsync(UserCreateDto newUser);

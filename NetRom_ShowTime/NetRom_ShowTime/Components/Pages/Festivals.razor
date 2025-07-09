@@ -1,77 +1,21 @@
 ﻿@page "/festivals"
 @using ShowTime.BusinessLogic.Abstractions
 @using ShowTime.BusinessLogic.Dtos
-@using NetRom_ShowTime.Components
-@using BlazorBootstrap
-@using Microsoft.AspNetCore.Components.Forms
-
+@using Microsoft.AspNetCore.Components
 @inject IFestivalService FestivalService
+@inject NavigationManager Nav
 
 @rendermode InteractiveServer
 
 <h3>Festivals</h3>
 
-<EditForm Model="newFestival" OnValidSubmit="AddFestival">
-    <DataAnnotationsValidator />
-
-    <div class="mb-3">
-        <label for="name" class="form-label">Name</label>
-        <InputText id="name"
-                   @bind-Value="newFestival.Name"
-                   class="form-control" />
-        <ValidationMessage For="@(() => newFestival.Name)" />
-    </div>
-
-    <div class="mb-3">
-        <label for="location" class="form-label">Location</label>
-        <InputText id="location"
-                   @bind-Value="newFestival.Location"
-                   class="form-control" />
-        <ValidationMessage For="@(() => newFestival.Location)" />
-    </div>
-
-    <div class="mb-3">
-        <label for="startDate" class="form-label">Start Date</label>
-        <InputDate DateTimeFormat="yyyy-MM-dd"
-                   id="startDate"
-                   @bind-Value="newFestival.StartDate"
-                   class="form-control" />
-        <ValidationMessage For="@(() => newFestival.StartDate)" />
-    </div>
-
-    <div class="mb-3">
-        <label for="endDate" class="form-label">End Date</label>
-        <InputDate DateTimeFormat="yyyy-MM-dd"
-                   id="endDate"
-                   @bind-Value="newFestival.EndDate"
-                   class="form-control" />
-        <ValidationMessage For="@(() => newFestival.EndDate)" />
-    </div>
-
-    <div class="mb-3">
-        <label for="splashArt" class="form-label">Splash Art URL</label>
-        <InputText id="splashArt"
-                   @bind-Value="newFestival.SplashArt"
-                   class="form-control" />
-        <ValidationMessage For="@(() => newFestival.SplashArt)" />
-    </div>
-
-    <div class="mb-3">
-        <label for="capacity" class="form-label">Capacity</label>
-        <InputNumber id="capacity"
-                     @bind-Value="newFestival.Capacity"
-                     class="form-control" />
-        <ValidationMessage For="@(() => newFestival.Capacity)" />
-    </div>
-
-    <button type="submit" class="btn btn-primary mb-4">
-        Add Festival
-    </button>
-</EditForm>
-
-@if (!festivals.Any())
+@if (festivals == null)
 {
-    <p class="text-center">No festivals registered</p>
+    <p><em>Loading…</em></p>
+}
+else if (!festivals.Any())
+{
+    <p>No festivals available.</p>
 }
 else
 {
@@ -90,7 +34,10 @@ else
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">@f.Name</h5>
-                            <p class="card-text">@f.Location</p>
+                            <p class="card-text">
+                                <strong>Location:</strong> @f.Location<br />
+                                <strong>Dates:</strong> @f.StartDate.ToString("MMMM dd, yyyy") - @f.EndDate.ToString("MMMM dd, yyyy")
+                            </p>
                         </div>
                     </div>
                 </NavLink>
@@ -99,27 +46,8 @@ else
     </div>
 }
 
-
 @code {
-    [SupplyParameterFromForm]
-    private FestivalCreateDto newFestival { get; set; } = new FestivalCreateDto
-    {
-        StartDate = DateTime.Today,
-        EndDate = DateTime.Today
-    };
-
     private IList<FestivalGetDto> festivals = new List<FestivalGetDto>();
-
-    private async Task AddFestival()
-    {
-        await FestivalService.AddFestivalAsync(newFestival);
-        newFestival = new FestivalCreateDto
-        {
-            StartDate = DateTime.Today,
-            EndDate = DateTime.Today
-        };
-        festivals = await FestivalService.GetAllFestivalsAsync();
-    }
 
     protected override async Task OnInitializedAsync()
     {

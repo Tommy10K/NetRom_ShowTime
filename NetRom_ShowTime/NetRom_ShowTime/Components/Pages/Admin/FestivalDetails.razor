@@ -1,14 +1,18 @@
-﻿@page "/festivals/{Id:int}"
+﻿@page "/festivals_admin/{Id:int}"
 @using ShowTime.BusinessLogic.Abstractions
 @using ShowTime.BusinessLogic.Dtos
 @using NetRom_ShowTime.Components
 @using BlazorBootstrap
 @using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Authorization
 
 @inject IFestivalService FestivalService
+@inject ITicketService TicketService
 @inject NavigationManager Nav
 
 @rendermode InteractiveServer
+
+@attribute [Authorize(Roles = "Admin")]
 
 <h3>Festival Details</h3>
 
@@ -44,6 +48,74 @@ else
                         </p>
                         <p class="card-text"><strong>Capacity:</strong> @festival.Capacity</p>
                     </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5>Ticket Types</h5>
+                            @if (ticketTypes == null)
+                            {
+                                <p><em>Loading…</em></p>
+                            }
+                            else if (!ticketTypes.Any())
+                            {
+                                <p><em>No ticket types yet.</em></p>
+                            }
+                            else
+                            {
+                                <ul class="list-group mb-3">
+                                    @foreach (var t in ticketTypes)
+                                    {
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>
+                                                <strong>@t.Name</strong> : @t.Price$ | Quantity: @t.Quantity
+                                            </span>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+
+                            <button class="btn btn-sm btn-success mb-2"
+                                    @onclick="() => showAddForm = true"
+                                    disabled="@(showAddForm)">
+                                Add Ticket Type
+                            </button>
+
+                            @if (showAddForm)
+                            {
+                                <EditForm Model="newTicket" OnValidSubmit="HandleValidSubmit">
+                                    <DataAnnotationsValidator />
+                                    <ValidationSummary />
+
+                                    <div class="mb-2">
+                                        <label class="form-label">Name</label>
+                                        <InputText class="form-control" @bind-Value="newTicket.Name" />
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label">Price</label>
+                                        <InputNumber class="form-control" @bind-Value="newTicket.Price" />
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label">Quantity</label>
+                                        <InputNumber class="form-control" @bind-Value="newTicket.Quantity" />
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary btn-sm me-2">Save</button>
+                                    <button type="button"
+                                            class="btn btn-secondary btn-sm"
+                                            @onclick="() => { showAddForm = false; newTicket = new(); }">
+                                        Cancel
+                                    </button>
+                                </EditForm>
+                            }
+                        </div>
+                    </div>
+
+                    <button class="btn btn-secondary"
+                            @onclick='() => Nav.NavigateTo("/festivals_admin")'>
+                        Back to list
+                    </button>
                 </div>
             </div>
         </div>
@@ -109,12 +181,39 @@ else
     private FestivalGetDto? festival;
     private FestivalUpdateDto editFestival = new();
     private bool isEditing;
+    private List<TicketGetDto> ticketTypes = new();
+    private bool showAddForm;
+    private TicketCreateDto newTicket = new();
 
     protected override async Task OnInitializedAsync()
     {
         festival = await FestivalService.GetFestivalByIdAsync(Id);
         if (festival is null)
             Nav.NavigateTo("/festivals");
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        festival    = await FestivalService.GetFestivalByIdAsync(Id);
+        ticketTypes = (await TicketService.GetTicketsByFestivalIdAsync(Id))
+            .Select(t => new TicketGetDto {
+                Id         = t.Id,
+                Name       = t.Name,
+                Price      = t.Price,
+                Quantity   = t.Quantity
+            })
+            .ToList();
+    }
+
+     private async Task HandleValidSubmit()
+    {
+        newTicket.FestivalId = Id;
+
+        await TicketService.AddTicketAsync(newTicket);
+        ticketTypes = (await TicketService.GetTicketsByFestivalIdAsync(Id)).ToList();
+
+        newTicket   = new();
+        showAddForm = false;
     }
 
     private void EnableEdit()
@@ -136,7 +235,6 @@ else
     private async Task SaveEdit()
     {
         await FestivalService.UpdateFestivalAsync(editFestival);
-        // reload details
         festival = await FestivalService.GetFestivalByIdAsync(Id);
         isEditing = false;
     }

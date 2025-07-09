@@ -1,13 +1,16 @@
-﻿@page "/artists"
+﻿@page "/artists_admin"
 @using ShowTime.BusinessLogic.Abstractions
 @using ShowTime.BusinessLogic.Dtos
 @using NetRom_ShowTime.Components
 @using BlazorBootstrap
 @using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Authorization
 
 @inject IArtistService ArtistService
 
 @rendermode InteractiveServer
+
+@attribute [Authorize(Roles = "Admin")]
 
 <h3>Add new artist</h3>
 <EditForm Model="newArtist" OnValidSubmit="AddArtist" FormName="Add Artist Form">

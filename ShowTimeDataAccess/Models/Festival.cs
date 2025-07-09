@@ -1,4 +1,6 @@
-﻿namespace ShowTime.DataAccess.Models;
+﻿using System.Net.Sockets;
+
+namespace ShowTime.DataAccess.Models;
 
 public class Festival
 {
@@ -13,4 +15,5 @@ public class Festival
     public ICollection<Artist> Artists { get; set; } = new List<Artist>();
     public ICollection<User> Users { get; set; } = new List<User>();
     public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+    public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 }

@@ -1,0 +1,49 @@
+﻿@page "/profile"
+@using System.Security.Claims
+@using ShowTime.BusinessLogic.Abstractions
+@using ShowTime.BusinessLogic.Dtos
+@using Microsoft.AspNetCore.Authorization
+
+@inject AuthenticationStateProvider AuthStateProvider
+@inject IUserService UserService
+
+@attribute [Authorize(Roles = "User")]
+
+<h3>Your Profile</h3>
+
+@if (user == null)
+{
+    <p><em>Loading user info…</em></p>
+}
+else
+{
+    <div class="card mb-4" style="max-width: 400px;">
+        <div class="card-body">
+            <h5 class="card-title">User #@user.Id</h5>
+            <p class="card-text"><strong>Email:</strong> @user.Email</p>
+            <p class="card-text"><strong>Role:</strong> @user.Role</p>
+            @* add more fields here if your DTO has them *@
+        </div>
+    </div>
+}
+
+@code {
+    private UserGetDto? user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var claimsUser = authState.User;
+
+        if (claimsUser.Identity?.IsAuthenticated == true)
+        {
+            // read the NameIdentifier claim we set at login
+            var idClaim = claimsUser.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (int.TryParse(idClaim, out var id))
+            {
+                // fetch the full user DTO
+                user = await UserService.GetUserByIdAsync(id);
+            }
+        }
+    }
+}

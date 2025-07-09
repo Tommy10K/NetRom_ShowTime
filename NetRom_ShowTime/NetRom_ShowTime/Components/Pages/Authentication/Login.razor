@@ -6,13 +6,11 @@
 @using BlazorBootstrap
 @using Microsoft.AspNetCore.Components.Forms
 @using System.Security.Claims
-@using System
 @using ShowTime.DataAccess.Models
 @using Microsoft.AspNetCore.Authentication.Cookies;
 
 @inject IUserService UserService
 @inject NavigationManager NavigationManager
-@inject HttpClient Http
 
 <h3>Login</h3>
 
@@ -27,24 +25,43 @@
     <InputText id="password" type="password" @bind-Value="newUser.Password" class="form-control mb-2" />
     <ValidationMessage For="@(() => newUser.Password)" />
 
-    <button type="submit" class="btn btn-primary mt-2 mb-3">Log In</button>
+    <button class="btn btn-primary mt-2 mb-3">Log In</button>
 </EditForm>
 
 @code {
     [SupplyParameterFromForm]
     private LogInDto newUser { get; set; } = new();
 
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = null!;
+
     private async Task Authenticate()
     {
-        var url = NavigationManager.BaseUri.TrimEnd('/') + "/api/login";
-        var resp = await Http.PostAsJsonAsync(url, newUser);
-        if (resp.IsSuccessStatusCode)
+        try
         {
+            var response = await UserService.LogInAsyncR(newUser);
+
+            if (response == null)
+            {
+                throw new Exception("Invalid login attempt.");
+            }
+
+            var claims = new List<Claim>
+            {
+                new(ClaimTypes.Email, newUser.Email),
+                new(ClaimTypes.NameIdentifier, response.Id.ToString()),
+                new(ClaimTypes.Role, Enum.GetName(typeof(Role), response.Role) ?? nameof(Role.User))
+            };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+
             NavigationManager.NavigateTo("/", forceLoad: true);
         }
-        else
+        catch (Exception ex) when (ex is not NavigationException)
         {
-            Console.WriteLine("Login failed. Please check your credentials.");
+            Console.WriteLine($"Login failed: {ex.Message}");
         }
     }
 }

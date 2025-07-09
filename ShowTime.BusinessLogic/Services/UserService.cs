@@ -44,6 +44,30 @@ namespace ShowTime.BusinessLogic.Services
             }
         }
 
+        public async Task<LoginResponseDto?> LogInAsyncR(LogInDto dto)
+        {
+            try
+            {
+                var users = await _userRepository.GetAllAsync();
+                var foundUser = users.FirstOrDefault(u => u.Email == dto.Email);
+
+                if (foundUser == null) return null;
+
+                if (!BCrypt.Net.BCrypt.Verify(dto.Password, foundUser.Password))
+                    return null;
+
+                return new LoginResponseDto
+                {
+                    Id = foundUser.Id,
+                    Role = foundUser.Role,
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while logging in.", ex);
+            }
+        }
+
         public async Task<UserGetDto?> GetUserByIdAsync(int id)
         {
             try
