@@ -1,0 +1,94 @@
+﻿@page "/buytickets/{Id:int}"
+@using ShowTime.BusinessLogic.Abstractions
+@using ShowTime.BusinessLogic.Dtos
+@using NetRom_ShowTime.Components
+@using BlazorBootstrap
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Authorization
+@using System.Security.Claims
+
+@inject IFestivalService FestivalService
+@inject ITicketService TicketService
+@inject IBookingService BookingService
+@inject AuthenticationStateProvider AuthStateProvider
+
+@inject NavigationManager Nav
+
+@rendermode InteractiveServer
+
+@attribute [Authorize(Roles = "User")]
+
+@if (!ticketTypes.Any())
+{
+    <p>No tickets available for purchase yet.</p>
+}
+else
+{
+    <div class="d-flex justify-content-center align-items-center min-vh-100 mb-3" style="margin-top: -20vh;">
+        <ul class="list-group" style="width: 100%; max-width: 400px;">
+            @foreach (var t in ticketTypes)
+            {
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>
+                            <strong>@t.Name</strong> : @t.Price$ | Quantity: @t.Quantity
+                        </span>
+                        <button class="btn btn-primary btn-sm" @onclick='() => OnBuy(t.Id)'>Buy</button>
+                    </div>
+                </li>
+            }
+            <button class="btn btn-secondary mt-4" @onclick='() => Nav.NavigateTo("/festivals")'>
+                Back to Festivals
+            </button>
+        </ul>
+    </div>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    private List<TicketGetDto> ticketTypes = new();
+
+    private string? userId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity?.IsAuthenticated == true)
+        {
+            userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        ticketTypes = (await TicketService.GetTicketsByFestivalIdAsync(Id))
+            .Select(t => new TicketGetDto
+            {
+                Id = t.Id,
+                Name = t.Name,
+                Price = t.Price,
+                Quantity = t.Quantity
+            })
+            .ToList();
+    }
+
+    private async Task OnBuy(int id)
+    {
+        if (int.TryParse(userId, out var parsedUserId))
+        {
+            await BookingService.AddBookingAsync(new BookingCreateDto
+            {
+                TicketId = id,
+                FestivalId = Id,
+                UserId = parsedUserId
+            });
+        }
+        else
+        {
+            throw new InvalidOperationException("User ID is not a valid integer.");
+        }
+    }
+}

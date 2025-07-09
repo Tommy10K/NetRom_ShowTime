@@ -2,10 +2,13 @@
 @using ShowTime.BusinessLogic.Abstractions
 @using ShowTime.BusinessLogic.Dtos
 @using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Authorization
 @inject IFestivalService FestivalService
 @inject NavigationManager Nav
 
 @rendermode InteractiveServer
+
+@attribute [Authorize(Roles = "User")]
 
 <h3>Festivals</h3>
 

@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 namespace ShowTime.DataAccess.Models;
 public class Booking
 {
+    public int Id { get; set; }
     public int FestivalId { get; set; }
     public int UserId { get; set; }
-    public string Type { get; set; } = string.Empty;
-    public int Price { get; set; }
-    public Festival Festival { get; set; } = null!;
-    public User User { get; set; } = null!;
+    public int TicketId { get; set; }
+    public DateTime BookingTime { get; set; }
+    public virtual Festival Festival { get; set; } = null!;
+    public virtual User User { get; set; } = null!;
+    public virtual Ticket Ticket { get; set; } = null!;
 }

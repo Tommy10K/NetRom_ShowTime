@@ -41,10 +41,10 @@ else
                         <h3 class="card-title">@festival.Name</h3>
                         <p class="card-text"><strong>Location:</strong> @festival.Location</p>
                         <p class="card-text mb-1">
-                            <strong>Start Date:</strong> @festival.StartDate:yyyy-MM-dd
+                            <strong>Start Date:</strong> @festival.StartDate.ToString("yyyy-MM-dd")
                         </p>
                         <p class="card-text mb-3">
-                            <strong>End Date:</strong> @festival.EndDate:yyyy-MM-dd
+                            <strong>End Date:</strong> @festival.EndDate.ToString("yyyy-MM-dd")
                         </p>
                         <p class="card-text"><strong>Capacity:</strong> @festival.Capacity</p>
                     </div>
@@ -203,6 +203,11 @@ else
                 Quantity   = t.Quantity
             })
             .ToList();
+
+        /*foreach(var t in ticketTypes)
+        {
+            await TicketService.DeleteTicketAsync(t.Id);
+        }*/
     }
 
      private async Task HandleValidSubmit()

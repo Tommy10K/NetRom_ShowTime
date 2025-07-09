@@ -2,11 +2,14 @@
 @using ShowTime.BusinessLogic.Abstractions
 @using ShowTime.BusinessLogic.Dtos
 @using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Authorization
 
 @inject IFestivalService FestivalService
 @inject NavigationManager Nav
 
 @rendermode InteractiveServer
+
+@attribute [Authorize(Roles = "User")]
 
 @if (festival == null)
 {
@@ -43,7 +46,7 @@ else
                             Back to Festivals
                         </button>
                         <button class="btn btn-success"
-                                @onclick='() => Nav.NavigateTo("/festivals")'>
+                                @onclick='() => Nav.NavigateTo($"/buytickets/{festival.Id}")'>
                             Get Tickets
                         </button>
                     </div>
