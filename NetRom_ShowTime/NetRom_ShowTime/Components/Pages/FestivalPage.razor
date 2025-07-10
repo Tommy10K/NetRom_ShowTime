@@ -5,6 +5,8 @@
 @using Microsoft.AspNetCore.Authorization
 
 @inject IFestivalService FestivalService
+@inject ILineupService LineupService
+@inject IArtistService ArtistService
 @inject NavigationManager Nav
 
 @rendermode InteractiveServer
@@ -54,18 +56,76 @@ else
             </div>
         </div>
     </div>
+
+    <h4>Line-up</h4>
+
+    @if (lineupItems == null)
+    {
+        <p><em>Loading lineup…</em></p>
+    }
+    else if (!lineupItems.Any())
+    {
+        <p>No artists scheduled yet.</p>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var item in lineupItems)
+            {
+                <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+                    <div class="card h-80">
+                        <div class="ratio" style="--bs-aspect-ratio:125%;">
+                            <img src="@item.Artist.Image"
+                                 class="card-img-top"
+                                 alt="@item.Artist.Name"
+                                 style="object-fit: cover; height: 200px;" />
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">@item.Artist.Name</h5>
+                            <p class="card-text mb-1"><strong>Stage:</strong> @item.Line.Stage</p>
+                            <p class="card-text mt-auto">
+                                <strong>When:</strong>
+                                @item.Line.StartTime:HH:mm on @item.Line.StartTime:yyyy-MM-dd
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
 }
 
 @code {
     [Parameter] public int Id { get; set; }
 
     private FestivalGetDto? festival;
+    private List<(LineupGetDto Line, ArtistGetDto Artist)>? lineupItems;
 
     protected override async Task OnInitializedAsync()
     {
         festival = await FestivalService.GetFestivalByIdAsync(Id);
         if (festival is null)
             Nav.NavigateTo("/festivals");
+
+        var lines = await LineupService.GetLineupsByFestivalIdAsync(Id);
+
+        var artistIds = lines.Select(l => l.ArtistId).Distinct();
+        var artists = new List<ArtistGetDto>();
+        foreach (var id in artistIds)
+        {
+            var a = await ArtistService.GetArtistByIdAsync(id);
+            if (a != null) artists.Add(a);
+        }
+
+        lineupItems = lines
+            .OrderBy(l => l.StartTime)
+            .Select(l =>
+            {
+                var art = artists.First(a => a.Id == l.ArtistId);
+                return (Line: l, Artist: art);
+            })
+            .ToList();
     }
 }
 

@@ -8,6 +8,9 @@
 
 @inject IFestivalService FestivalService
 @inject ITicketService TicketService
+@inject IArtistService ArtistService
+@inject ILineupService LineupService
+@inject IJSRuntime JS
 @inject NavigationManager Nav
 
 @rendermode InteractiveServer
@@ -173,6 +176,11 @@ else
             </div>
         </EditForm>
     }
+
+    <button class="btn btn-primary mt-3"
+            @onclick='() => Nav.NavigateTo($"/lineup/{Id}")'>
+        See line-up / add artist
+    </button>
 }
 
 @code {
@@ -185,11 +193,19 @@ else
     private bool showAddForm;
     private TicketCreateDto newTicket = new();
 
+    private bool showForm;
+    private LineupCreateDto newLineup = new();
+    private IList<ArtistGetDto> artists = new List<ArtistGetDto>();
+    private DateTime datePart = DateTime.Today;
+    private TimeOnly? timePart = new TimeOnly(20, 0);
+
     protected override async Task OnInitializedAsync()
     {
         festival = await FestivalService.GetFestivalByIdAsync(Id);
         if (festival is null)
             Nav.NavigateTo("/festivals");
+
+        artists = await ArtistService.GetAllArtistsAsync();
     }
 
     protected override async Task OnParametersSetAsync()
@@ -250,5 +266,24 @@ else
     {
         await FestivalService.DeleteFestivalAsync(Id);
         Nav.NavigateTo("/festivals");
+    }
+
+    private void ToggleForm()
+    {
+        showForm = !showForm;
+        if (showForm)
+        {
+            newLineup = new LineupCreateDto { FestivalId = Id };
+            datePart = DateTime.Today;
+            timePart = new TimeOnly(20, 0);
+        }
+    }
+
+    private async Task SubmitLineup()
+    {
+        newLineup.StartTime = datePart.Date + timePart!.Value.ToTimeSpan();
+        await LineupService.AddLineupAsync(newLineup);
+        showForm = false;
+        festival = await FestivalService.GetFestivalByIdAsync(Id);
     }
 }

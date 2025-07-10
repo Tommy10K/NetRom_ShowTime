@@ -15,5 +15,7 @@ namespace ShowTime.BusinessLogic.Dtos
         public DateTime EndDate { get; set; }
         public string SplashArt { get; set; } = string.Empty;
         public int Capacity { get; set; }
+
+        public IList<LineupGetDto> Lineups { get; set; } = new List<LineupGetDto>();
     }
 }

@@ -31,7 +31,17 @@ namespace ShowTime.BusinessLogic.Services
                 StartDate = f.StartDate,
                 EndDate = f.EndDate,
                 SplashArt = f.SplashArt,
-                Capacity = f.Capacity
+                Capacity = f.Capacity,
+                Lineups = f.Lineups
+                       .Select(l => new LineupGetDto
+                       {
+                           Id = l.Id,
+                           FestivalId = l.FestivalId,
+                           ArtistId = l.ArtistId,
+                           Stage = l.Stage,
+                           StartTime = l.StartTime
+                       })
+                       .ToList()
             };
         }
 

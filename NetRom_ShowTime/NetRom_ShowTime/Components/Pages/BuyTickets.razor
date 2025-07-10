@@ -1,4 +1,4 @@
-﻿@page "/buytickets/{Id:int}"
+﻿@page "/buytickets/{FestivalId:int}"
 @using ShowTime.BusinessLogic.Abstractions
 @using ShowTime.BusinessLogic.Dtos
 @using NetRom_ShowTime.Components
@@ -11,7 +11,7 @@
 @inject ITicketService TicketService
 @inject IBookingService BookingService
 @inject AuthenticationStateProvider AuthStateProvider
-
+@inject IJSRuntime JS
 @inject NavigationManager Nav
 
 @rendermode InteractiveServer
@@ -24,32 +24,53 @@
 }
 else
 {
-    <div class="d-flex justify-content-center align-items-center min-vh-100 mb-3" style="margin-top: -20vh;">
-        <ul class="list-group" style="width: 100%; max-width: 400px;">
-            @foreach (var t in ticketTypes)
-            {
-                <li class="list-group-item">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span>
-                            <strong>@t.Name</strong> : @t.Price$ | Quantity: @t.Quantity
-                        </span>
-                        <button class="btn btn-primary btn-sm" @onclick='() => OnBuy(t.Id)'>Buy</button>
+    <div class="row">
+        @foreach (var ticket in ticketTypes)
+        {
+            <div class="col-sm-6 col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">@ticket.Name</h5>
+                        <p class="card-text"><strong>Price:</strong> @ticket.Price.ToString("C")</p>
+
+                        <label for="qty-@ticket.Id" class="form-label">Quantity</label>
+                        <input type="number"
+                               class="form-control"
+                               min="0"
+                               max="@remainingAllowed"
+                               @bind="quantities[ticket.Id]"
+                               @bind:event="oninput" />
                     </div>
-                </li>
-            }
-            <button class="btn btn-secondary mt-4" @onclick='() => Nav.NavigateTo("/festivals")'>
-                Back to Festivals
-            </button>
-        </ul>
+                </div>
+            </div>
+        }
     </div>
+
+    <p>
+        <strong>Remaining number of tickets you can buy:</strong> @remainingAllowed
+        @if (remainingAllowed == 0)
+        {
+            <span class="text-danger ms-2"> - You already own the maximum (5).</span>
+        }
+    </p>
+
+    <button class="btn btn-primary"
+            @onclick="ConfirmPurchase"
+            disabled="@(newlySelected == 0 || newlySelected > remainingAllowed)">
+        Buy Tickets
+    </button>
 }
 
 @code {
-    [Parameter] public int Id { get; set; }
+    [Parameter] public int FestivalId { get; set; }
 
     private List<TicketGetDto> ticketTypes = new();
+    private Dictionary<int, int> quantities = new();
+    private int newlySelected => quantities.Values.Sum();
 
-    private string? userId;
+    private int alreadyOwned;
+    private int remainingAllowed => Math.Max(0, 5 - alreadyOwned);
+    private int userId;
 
     protected override async Task OnInitializedAsync()
     {
@@ -58,37 +79,52 @@ else
 
         if (user.Identity?.IsAuthenticated == true)
         {
-            userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            string? idClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            userId = int.TryParse(idClaim, out var id) ? id : 0;
         }
+
+        var myBookings = await BookingService.GetBookingsByUserIdAsync(userId);
+        alreadyOwned = myBookings.Count(b => b.FestivalId == FestivalId);
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        ticketTypes = (await TicketService.GetTicketsByFestivalIdAsync(Id))
-            .Select(t => new TicketGetDto
-            {
-                Id = t.Id,
-                Name = t.Name,
-                Price = t.Price,
-                Quantity = t.Quantity
-            })
-            .ToList();
+        ticketTypes = (await TicketService.GetTicketsByFestivalIdAsync(FestivalId))
+                  .ToList();
+
+        foreach (var t in ticketTypes)
+        {
+            quantities[t.Id] = 0;
+        }
     }
 
-    private async Task OnBuy(int id)
+    private async Task ConfirmPurchase()
     {
-        if (int.TryParse(userId, out var parsedUserId))
+        if (newlySelected == 0 || newlySelected > remainingAllowed) return;
+
+        var ok = await JS.InvokeAsync<bool>(
+            "confirm",
+            $"Are you sure you want to buy {newlySelected} additional ticket(s)?");
+        if (!ok) return;
+
+        var now = DateTime.UtcNow;
+        var state = await AuthStateProvider.GetAuthenticationStateAsync();
+        var userId = int.Parse(state.User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+        foreach (var kv in quantities)
         {
-            await BookingService.AddBookingAsync(new BookingCreateDto
+            for (int i = 0; i < kv.Value; i++)
             {
-                TicketId = id,
-                FestivalId = Id,
-                UserId = parsedUserId
-            });
+                await BookingService.AddBookingAsync(new BookingCreateDto
+                {
+                    UserId = userId,
+                    FestivalId = FestivalId,
+                    TicketId = kv.Key,
+                    BookingTime = now
+                });
+            }
         }
-        else
-        {
-            throw new InvalidOperationException("User ID is not a valid integer.");
-        }
+
+        Nav.NavigateTo("/mybookings", forceLoad: true);
     }
 }

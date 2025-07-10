@@ -1,7 +1,123 @@
 ﻿@page "/mybookings"
+@using System.Security.Claims
+@using ShowTime.BusinessLogic.Abstractions
+@using ShowTime.BusinessLogic.Dtos
+@using Microsoft.AspNetCore.Authorization
 
-<h3>MyBookings</h3>
+@inject AuthenticationStateProvider AuthStateProvider
+@inject IBookingService BookingService
+@inject IFestivalService FestivalService
+@inject ITicketService TicketService
+@inject IJSRuntime JS
+
+@rendermode InteractiveServer
+
+@attribute [Authorize(Roles = "User")]
+
+<h3>My Bookings</h3>
+
+@if (!details.Any())
+{
+    <p>You have no bookings yet.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <colgroup>
+                <col style="width: 18%;" /> 
+                <col style="width: 22%;" />
+                <col style="width: 22%;" />
+                <col style="width: 22%;" />
+                <col /> 
+            </colgroup>
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Festival</th>
+                    <th>Ticket Type</th>
+                    <th>Booked At</th>
+                    <th> </th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < details.Count; i++)
+                {
+                    var d = details[i];
+                    <tr>
+                        <td>@(i + 1)</td>
+                        <td>@d.FestivalName</td>
+                        <td>@d.TicketName</td>
+                        <td>@d.Booking.BookingTime.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger"
+                                    @onclick="() => ConfirmRefund(d.Booking, d.FestivalName, d.TicketName)">
+                                Refund
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
 
 @code {
+    private IList<BookingGetDto>? bookings;
+    private List<(BookingGetDto Booking, string FestivalName, string TicketName)> details = new List<(BookingGetDto, string, string)>();
 
+    private int userId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity?.IsAuthenticated == true)
+        {
+            string? idClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            userId = int.TryParse(idClaim, out var id) ? id : 0;
+        }
+        if (userId == 0)
+        {
+            return;
+        }
+        await LoadDetailsAsync();
+    }
+
+    private async Task LoadDetailsAsync()
+    {
+        bookings = await BookingService.GetBookingsByUserIdAsync(userId);
+
+        var temp = new List<(BookingGetDto, string, string)>();
+        foreach (var b in bookings)
+        {
+            var festDto = await FestivalService.GetFestivalByIdAsync(b.FestivalId);
+            var tickDto = await TicketService.GetTicketByIdAsync(b.TicketId);
+
+            temp.Add((
+              b,
+              festDto?.Name ?? $"(unknown festival #{b.FestivalId})",
+              tickDto?.Name ?? $"(unknown ticket #{b.TicketId})"
+            ));
+        }
+
+        details = temp;
+    }
+
+    private async Task ConfirmRefund(
+        BookingGetDto booking,
+        string festivalName,
+        string ticketName)
+    {
+        var msg = $"Are you sure you want to refund your “{ticketName}” ticket at {festivalName}?";
+        var ok = await JS.InvokeAsync<bool>("confirm", msg);
+        if (!ok)
+            return;
+
+        await BookingService.DeleteBookingAsync(booking.Id);
+
+        await LoadDetailsAsync();
+    }
 }
+

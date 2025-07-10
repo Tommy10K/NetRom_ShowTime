@@ -1,7 +1,81 @@
-﻿@page "/bookings_admin"
+﻿@page "/bookings"
+@using ShowTime.BusinessLogic.Abstractions
+@using ShowTime.BusinessLogic.Dtos
+@using Microsoft.AspNetCore.Authorization
 
-<h3>Bookings</h3>
+@inject IBookingService BookingService
+@inject IJSRuntime JS
+
+@rendermode InteractiveServer
+
+@attribute [Authorize(Roles = "Admin")]
+
+<h3>All Bookings</h3>
+
+@if (bookings == null)
+{
+    <p><em>Loading…</em></p>
+}
+else if (!bookings.Any())
+{
+    <p>No bookings found</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">User ID</th>
+                    <th scope="col">Festival ID</th>
+                    <th scope="col">Ticket ID</th>
+                    <th scope="col">Booked At</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var b in bookings)
+                {
+                    <tr>
+                        <td>@b.Id</td>
+                        <td>@b.UserId</td>
+                        <td>@b.FestivalId</td>
+                        <td>@b.TicketId</td>
+                        <td>@b.BookingTime.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger"
+                                    @onclick="() => ConfirmDelete(b.Id)">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
 
 @code {
+    private List<BookingGetDto> bookings = new List<BookingGetDto>();
 
+    protected override async Task OnInitializedAsync()
+    {
+        var list = await BookingService.GetAllBookingsAsync();
+        bookings = list.ToList();
+    }
+
+    private async Task ConfirmDelete(int id)
+    {
+        var ok = await JS.InvokeAsync<bool>(
+            "confirm",
+            $"Are you sure you want to delete booking #{id}?"
+        );
+        if (!ok) return;
+
+        await BookingService.DeleteBookingAsync(id);
+
+        var list = await BookingService.GetAllBookingsAsync();
+        bookings = list.OrderBy(b => b.Id).ToList();
+    }
 }

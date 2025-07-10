@@ -41,6 +41,8 @@ builder.Services.AddTransient<IRepository<Ticket>, GenericRepository<Ticket>>();
 builder.Services.AddTransient<ITicketService, TicketService>();
 builder.Services.AddTransient<IRepository<Booking>, GenericRepository<Booking>>();
 builder.Services.AddTransient<IBookingService, BookingService>();
+builder.Services.AddTransient<IRepository<Lineup>, GenericRepository<Lineup>>();
+builder.Services.AddTransient<ILineupService, LineupService>();
 
 builder.Services.AddBlazorBootstrap();
 

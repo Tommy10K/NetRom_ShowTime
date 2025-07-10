@@ -1,0 +1,326 @@
+﻿@page "/lineup/{FestivalId:int}"
+
+@using ShowTime.BusinessLogic.Abstractions
+@using ShowTime.BusinessLogic.Dtos
+@using NetRom_ShowTime.Components
+@using BlazorBootstrap
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Authorization
+
+@inject IFestivalService FestivalService
+@inject ITicketService TicketService
+@inject IArtistService ArtistService
+@inject ILineupService LineupService
+@inject IJSRuntime JS
+@inject NavigationManager Nav
+
+@rendermode InteractiveServer
+
+@attribute [Authorize(Roles = "Admin")]
+
+<h3>@Festival?.Name – Line-up</h3>
+
+<button class="btn btn-secondary mb-3"
+        @onclick='() => Nav.NavigateTo($"/festivals_admin/{FestivalId}")'>
+    ← back to details
+</button>
+
+<button class="btn btn-success mb-3" @onclick="ToggleForm">
+    @(showForm ? "Cancel" : "Add artist to line-up")
+</button>
+
+@if (showForm)
+{
+    <EditForm Model="newLineup" OnValidSubmit="SubmitLineup"
+              class="border rounded p-3 mb-4">
+        <DataAnnotationsValidator />
+
+        <div class="mb-3">
+            <label class="form-label">Artist</label>
+            <InputSelect class="form-select"
+                         @bind-Value="newLineup.ArtistId">
+                <option value="">-- select artist --</option>
+                @foreach (var a in artists)
+                {
+                    <option value="@a.Id">@a.Name</option>
+                }
+            </InputSelect>
+            <button type="button" class="btn btn-link p-0"
+                @onclick="() => showArtistModal = true">
+                    + add new artist
+            </button>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Stage</label>
+            <InputText class="form-control"
+                       @bind-Value="newLineup.Stage" />
+        </div>
+
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label class="form-label">Date</label>
+                <InputDate class="form-control"
+                           @bind-Value="datePart" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Time (HH:mm)</label>
+                <input type="time"
+                       class="form-control"
+                       step="60"
+                       @bind="timePart" />
+            </div>
+        </div>
+
+        <button class="btn btn-primary"
+                disabled="@(newLineup.ArtistId == 0 ||
+                             string.IsNullOrWhiteSpace(newLineup.Stage) ||
+                             timePart == null)">
+            Add to line-up
+        </button>
+    </EditForm>
+}
+
+@if (showArtistModal)
+{
+    <div class="modal fade show d-block" style="background: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Artist</h5>
+                    <button type="button" class="btn-close"
+                            @onclick="() => showArtistModal = false"></button>
+                </div>
+                <EditForm Model="newArtist" OnValidSubmit="SubmitArtist">
+                    <DataAnnotationsValidator />
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Name</label>
+                            <InputText class="form-control" @bind-Value="newArtist.Name" />
+                            <ValidationMessage For="@(() => newArtist.Name)" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Genre</label>
+                            <InputText class="form-control" @bind-Value="newArtist.Genre" />
+                            <ValidationMessage For="@(() => newArtist.Genre)" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Image URL</label>
+                            <InputText class="form-control" @bind-Value="newArtist.Image" />
+                            <ValidationMessage For="@(() => newArtist.Image)" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-secondary"
+                                @onclick="() => showArtistModal = false">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            Add Artist
+                        </button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+}
+
+@if (lineups == null)
+{
+    <p><em>Loading line-up…</em></p>
+}
+else if (!lineups.Any())
+{
+    <p>No artists in the line-up yet.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Artist</th>
+                <th>Stage</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var l in lineups.OrderBy(l => l.StartTime))
+            {
+                var art = artists.First(a => a.Id == l.ArtistId);
+                <tr>
+                    <td>@l.StartTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@art.Name</td>
+                    <td>@l.Stage</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary me-2"
+                                @onclick="() => OpenEditModal(l)">
+                            Edit
+                        </button>
+                        <button class="btn btn-sm btn-danger"
+                                @onclick="() => ConfirmDelete(l.Id, art.Name, l.StartTime)">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (editingLineup != null)
+{
+    <div class="modal fade show d-block" style="background: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Line-up Entry</h5>
+                    <button type="button" class="btn-close" @onclick="CloseEditModal"></button>
+                </div>
+
+                <EditForm Model="editModel" OnValidSubmit="SaveEdit">
+                    <DataAnnotationsValidator />
+
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Stage</label>
+                            <InputText class="form-control"
+                                       @bind-Value="editModel.Stage" />
+                        </div>
+                        <div class="row g-3">
+                            <div class="col">
+                                <label class="form-label">Date</label>
+                                <InputDate class="form-control"
+                                           @bind-Value="editDate" />
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Time</label>
+                                <input type="time"
+                                       class="form-control"
+                                       step="60"
+                                       @bind="editTime" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                                @onclick="CloseEditModal">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            Save changes
+                        </button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public int FestivalId { get; set; }
+
+    private FestivalGetDto? Festival;
+    private IList<ArtistGetDto> artists = new List<ArtistGetDto>();
+    private IList<LineupGetDto>? lineups;
+
+    private bool showAddForm;
+    private bool showEditModal;
+    private bool showForm;
+    private LineupGetDto? editingLineup;
+    private LineupUpdateDto editModel = new();
+    private LineupCreateDto newLineup = new();
+    private DateTime datePart = DateTime.Today;
+    private TimeOnly? timePart = new TimeOnly(20, 0);
+    private DateTime editDate = DateTime.Today;
+    private TimeOnly? editTime = new TimeOnly(20, 0);
+
+    private bool showArtistModal;
+    private ArtistCreateDto newArtist = new ArtistCreateDto();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Festival = await FestivalService.GetFestivalByIdAsync(FestivalId);
+        artists  = await ArtistService.GetAllArtistsAsync();
+        await LoadLineupsAsync();
+    }
+
+    private Task LoadLineupsAsync() =>
+        LineupService.GetLineupsByFestivalIdAsync(FestivalId)
+                     .ContinueWith(t => lineups = t.Result);
+
+    private void ToggleForm()
+    {
+        showForm = !showForm;
+        if (showForm)
+        {
+            newLineup = new LineupCreateDto { FestivalId = FestivalId };
+            datePart  = DateTime.Today;
+            timePart  = new TimeOnly(20, 0);
+        }
+    }
+
+    private void OpenEditModal(LineupGetDto l)
+    {
+        editingLineup = l;
+        editModel.Id = l.Id;
+        editModel.Stage = l.Stage;
+        editModel.FestivalId = l.FestivalId;
+        editModel.ArtistId = l.ArtistId;
+        editDate = l.StartTime.Date;
+        editTime = TimeOnly.FromDateTime(l.StartTime);
+        showEditModal = true;
+    }
+
+    private void CloseEditModal()
+    {
+        showEditModal = false;
+        editingLineup = null;
+    }
+
+    private async Task SaveEdit()
+    {
+        editModel.StartTime = editDate.Date + editTime!.Value.ToTimeSpan();
+        await LineupService.UpdateLineupAsync(editModel);
+        await LoadLineupsAsync();
+        CloseEditModal();
+    }
+
+    private async Task ConfirmDelete(int id, string artistName, DateTime when)
+    {
+        var ok = await JS.InvokeAsync<bool>(
+          "confirm",
+          $"Delete {artistName} at {when:HH:mm}?");
+        if (!ok) return;
+
+        await LineupService.DeleteLineupAsync(id);
+        await LoadLineupsAsync();
+    }
+
+    private async Task SubmitLineup()
+    {
+        newLineup.StartTime = datePart.Date + timePart!.Value.ToTimeSpan();
+        await LineupService.AddLineupAsync(newLineup);
+        showForm = false;
+        await LoadLineupsAsync();
+    }
+
+    private async Task SubmitArtist()
+    {
+        await ArtistService.AddArtistAsync(newArtist);
+        artists = await ArtistService.GetAllArtistsAsync();
+        var added = artists.FirstOrDefault(a =>
+          a.Name == newArtist.Name &&
+          a.Genre == newArtist.Genre &&
+          a.Image == newArtist.Image);
+        if (added != null)
+        {
+            newLineup.ArtistId = added.Id;
+        }
+        newArtist = new ArtistCreateDto();
+        showArtistModal = false;
+    }
+}

@@ -14,7 +14,8 @@ namespace ShowTime.DataAccess.Configurations
         public void Configure(EntityTypeBuilder<Lineup> builder)
         {
             builder.ToTable("Lineups");
-            builder.HasKey(l => new { l.FestivalId, l.ArtistId });
+            builder.HasKey(l => l.Id);
+
             builder.Property(l => l.Stage)
                 .IsRequired()
                 .HasMaxLength(100);
