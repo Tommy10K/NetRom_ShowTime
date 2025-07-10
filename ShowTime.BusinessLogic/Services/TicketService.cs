@@ -29,7 +29,8 @@ namespace ShowTime.BusinessLogic.Services
                 FestivalId = ticket.FestivalId,
                 Name = ticket.Name,
                 Price = ticket.Price,
-                Quantity = ticket.Quantity
+                Quantity = ticket.Quantity,
+                SoldCount = ticket.SoldCount
             };
         }
 
@@ -44,7 +45,8 @@ namespace ShowTime.BusinessLogic.Services
                     FestivalId = t.FestivalId,
                     Name = t.Name,
                     Price = t.Price,
-                    Quantity = t.Quantity
+                    Quantity = t.Quantity,
+                    SoldCount = t.SoldCount
                 }).ToList();
             }
             catch (Exception ex)
@@ -65,7 +67,8 @@ namespace ShowTime.BusinessLogic.Services
                                   FestivalId = t.FestivalId,
                                   Name = t.Name,
                                   Price = t.Price,
-                                  Quantity = t.Quantity
+                                  Quantity = t.Quantity,
+                                  SoldCount = t.SoldCount
                               }).ToList();
             }
             catch (Exception ex)
@@ -83,7 +86,8 @@ namespace ShowTime.BusinessLogic.Services
                     FestivalId = dto.FestivalId,
                     Name = dto.Name,
                     Price = dto.Price,
-                    Quantity = dto.Quantity
+                    Quantity = dto.Quantity,
+                    SoldCount = dto.SoldCount
                 };
                 await _ticketRepository.AddAsync(ticket);
             }
@@ -101,6 +105,7 @@ namespace ShowTime.BusinessLogic.Services
             ticket.Name = dto.Name;
             ticket.Price = dto.Price;
             ticket.Quantity = dto.Quantity;
+            ticket.SoldCount = dto.SoldCount;
 
             await _ticketRepository.UpdateAsync(ticket);
         }

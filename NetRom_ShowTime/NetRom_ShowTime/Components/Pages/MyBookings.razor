@@ -3,6 +3,7 @@
 @using ShowTime.BusinessLogic.Abstractions
 @using ShowTime.BusinessLogic.Dtos
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Routing
 
 @inject AuthenticationStateProvider AuthStateProvider
 @inject IBookingService BookingService
@@ -12,7 +13,7 @@
 
 @rendermode InteractiveServer
 
-@attribute [Authorize(Roles = "User")]
+@attribute [Authorize(Roles = "User,Admin")]
 
 <h3>My Bookings</h3>
 
@@ -46,7 +47,12 @@ else
                     var d = details[i];
                     <tr>
                         <td>@(i + 1)</td>
-                        <td>@d.FestivalName</td>
+                        <td>
+                            <NavLink class="text-decoration-none text-reset"
+                                     href="@($"/festivals/{d.Booking.FestivalId}")">
+                                @d.FestivalName
+                            </NavLink>
+                        </td>
                         <td>@d.TicketName</td>
                         <td>@d.Booking.BookingTime.ToString("dd.MM.yyyy HH:mm")</td>
                         <td>

@@ -1,0 +1,64 @@
+﻿@page "/artists"
+@using ShowTime.BusinessLogic.Dtos
+@using ShowTime.BusinessLogic.Abstractions
+@using Microsoft.AspNetCore.Authorization
+
+@inject IArtistService ArtistService
+
+@rendermode InteractiveServer
+
+@attribute [Authorize(Roles = "User,Admin")]
+
+<h3>Artists</h3>
+
+@if (artists == null)
+{
+    <p><em>Loading artists…</em></p>
+}
+else if (!artists.Any())
+{
+    <p>No artists found.</p>
+}
+else
+{
+    <div class="row mb-2">
+        <div class="row mb-1">
+            <div class="col-md-4 mb-2">
+                <InputText @bind-Value="nameFilter"
+                           placeholder="Search by name..."
+                           class="form-control" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        @foreach (var artist in artists.Where(a => string.IsNullOrWhiteSpace(nameFilter) || a.Name.Contains(nameFilter, StringComparison.OrdinalIgnoreCase)))
+        {
+            <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+                <div class="card h-80">
+                    <div class="ratio" style="--bs-aspect-ratio:125%;">
+                        <img src="@artist.Image"
+                             alt="@artist.Name"
+                             class="card-img-top"
+                             style="object-fit: cover;" />
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title mb-1">@artist.Name</h5>
+                        <p class="card-text text-muted mb-3">@artist.Genre</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private IList<ArtistGetDto>? artists;
+    private string nameFilter = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        artists = await ArtistService.GetAllArtistsAsync();
+    }
+}
+

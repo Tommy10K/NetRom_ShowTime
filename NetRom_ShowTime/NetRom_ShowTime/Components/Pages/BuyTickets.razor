@@ -16,7 +16,7 @@
 
 @rendermode InteractiveServer
 
-@attribute [Authorize(Roles = "User")]
+@attribute [Authorize(Roles = "User,Admin")]
 
 @if (!ticketTypes.Any())
 {
@@ -27,17 +27,24 @@ else
     <div class="row">
         @foreach (var ticket in ticketTypes)
         {
+            var sold = ticketSoldCount[ticket.Id];
+            var available = Math.Max(0, ticket.Quantity - sold);
+            var maxForThis = Math.Min(remainingAllowed, available);
+
             <div class="col-sm-6 col-md-4 mb-4">
                 <div class="card h-100">
-                    <div class="card-body">
+                    <div class="card-body d-flex flex-column">
                         <h5 class="card-title">@ticket.Name</h5>
-                        <p class="card-text"><strong>Price:</strong> @ticket.Price.ToString("C")</p>
+                        <p class="card-text"><strong>Price:</strong> @ticket.Price:C</p>
+                        <p class="card-text mb-2">
+                            <strong>@available left</strong>
+                        </p>
 
-                        <label for="qty-@ticket.Id" class="form-label">Quantity</label>
+                        <label class="form-label">Quantity</label>
                         <input type="number"
-                               class="form-control"
+                               class="form-control mb-3"
                                min="0"
-                               max="@remainingAllowed"
+                               max="@maxForThis"
                                @bind="quantities[ticket.Id]"
                                @bind:event="oninput" />
                     </div>
@@ -47,19 +54,20 @@ else
     </div>
 
     <p>
-        <strong>Remaining number of tickets you can buy:</strong> @remainingAllowed
-        @if (remainingAllowed == 0)
-        {
-            <span class="text-danger ms-2"> - You already own the maximum (5).</span>
-        }
+        <strong>You already own:</strong> @alreadyOwned
+        &nbsp;|&nbsp;
+        <strong>You can still buy:</strong> @remainingAllowed
     </p>
 
     <button class="btn btn-primary"
             @onclick="ConfirmPurchase"
-            disabled="@(newlySelected == 0 || newlySelected > remainingAllowed)">
-        Buy Tickets
+            disabled="@(newlySelected == 0 || newlySelected > remainingAllowed || quantities.Any(kv => 
+                kv.Value > Math.Min(remainingAllowed, (ticketTypes.First(t => t.Id == kv.Key)
+                    .Quantity - ticketSoldCount[kv.Key]))))">
+            Buy Tickets
     </button>
 }
+
 
 @code {
     [Parameter] public int FestivalId { get; set; }
@@ -71,6 +79,8 @@ else
     private int alreadyOwned;
     private int remainingAllowed => Math.Max(0, 5 - alreadyOwned);
     private int userId;
+
+    private Dictionary<int, int> ticketSoldCount = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -95,6 +105,10 @@ else
         foreach (var t in ticketTypes)
         {
             quantities[t.Id] = 0;
+
+            var soldList = await BookingService.GetBookingsByTicketIdAsync(t.Id);
+            var soldThisFestival = soldList.Count(b => b.FestivalId == FestivalId);
+            ticketSoldCount[t.Id] = soldThisFestival;
         }
     }
 
@@ -107,7 +121,7 @@ else
             $"Are you sure you want to buy {newlySelected} additional ticket(s)?");
         if (!ok) return;
 
-        var now = DateTime.UtcNow;
+        var now = DateTime.Now;
         var state = await AuthStateProvider.GetAuthenticationStateAsync();
         var userId = int.Parse(state.User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 

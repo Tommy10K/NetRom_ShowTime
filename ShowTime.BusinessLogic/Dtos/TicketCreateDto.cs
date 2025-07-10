@@ -19,5 +19,7 @@ namespace ShowTime.BusinessLogic.Dtos
 
         [Required(ErrorMessage = "Quantity is required.")]
         public int Quantity { get; set; }
+
+        public int SoldCount { get; set; } = 0;
     }
 }

@@ -13,6 +13,7 @@ namespace ShowTime.DataAccess.Models
         public string Name { get; set; } = string.Empty;
         public int Price { get; set; }
         public int Quantity {  get; set; }
+        public int SoldCount { get; set; }
 
         public virtual Festival Festival { get; set; } = null!;
         public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();

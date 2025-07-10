@@ -14,5 +14,6 @@ namespace ShowTime.BusinessLogic.Dtos
         public string Name { get; set; } = string.Empty;
         public int Price { get; set; }
         public int Quantity { get; set; }
+        public int SoldCount { get; set; }
     }
 }

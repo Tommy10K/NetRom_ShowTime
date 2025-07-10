@@ -1,6 +1,6 @@
 ﻿<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">NetRom_ShowTime</a>
+        <a class="navbar-brand" href="">ShowTime</a>
     </div>
 </div>
 
@@ -89,6 +89,16 @@
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="mybookings">
                         <span class="" aria-hidden="true"></span> Bookings
+                    </NavLink>
+                </div>
+            </Authorized>
+        </AuthorizeView>
+
+        <AuthorizeView Roles="User, Admin">
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="artists">
+                        <span class="" aria-hidden="true"></span> Artists
                     </NavLink>
                 </div>
             </Authorized>
