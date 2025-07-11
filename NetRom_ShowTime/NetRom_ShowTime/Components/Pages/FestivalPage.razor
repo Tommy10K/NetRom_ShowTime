@@ -13,6 +13,10 @@
 
 @attribute [Authorize(Roles = "User,Admin")]
 
+<HeadContent>
+    <link rel="stylesheet" href="css/festivalpage.css" />
+</HeadContent>
+
 @if (festival == null)
 {
     <p><em>Loading…</em></p>

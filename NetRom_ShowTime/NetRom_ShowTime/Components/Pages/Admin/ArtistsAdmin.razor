@@ -12,6 +12,10 @@
 
 @attribute [Authorize(Roles = "Admin")]
 
+<HeadContent>
+    <link rel="stylesheet" href="css/admin-artists.css" />
+</HeadContent>
+
 <h3>Add new artist</h3>
 <EditForm Model="newArtist" OnValidSubmit="AddArtist" FormName="Add Artist Form">
     <DataAnnotationsValidator />

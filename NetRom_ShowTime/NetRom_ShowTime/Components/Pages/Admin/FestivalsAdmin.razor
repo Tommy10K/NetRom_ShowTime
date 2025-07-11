@@ -12,6 +12,10 @@
 
 @attribute [Authorize(Roles = "Admin")]
 
+<HeadContent>
+    <link rel="stylesheet" href="css/admin-festivals.css" />
+</HeadContent>
+
 <h3>Festivals</h3>
 
 <EditForm Model="newFestival" OnValidSubmit="AddFestival">

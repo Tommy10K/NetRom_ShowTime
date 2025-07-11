@@ -9,6 +9,10 @@
 
 @attribute [Authorize(Roles = "User,Admin")]
 
+<HeadContent>
+    <link rel="stylesheet" href="css/profile.css" />
+</HeadContent>
+
 <h3>Your Profile</h3>
 
 @if (user == null)

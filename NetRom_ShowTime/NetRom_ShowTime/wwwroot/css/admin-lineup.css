@@ -1,0 +1,235 @@
+body {
+    background: linear-gradient(135deg,#0a0a0a 0%,#1a0a2e 25%,#16213e 50%,#1a0a2e 75%,#0a0a0a 100%);
+    color: #ffffff;
+    font-family: 'Arial Black','Helvetica Bold',sans-serif;
+    min-height: 100vh;
+}
+
+.page, main {
+    background: transparent
+}
+
+/* heading */
+h3 {
+    font-size: 3rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: #8b5cf6;
+    text-align: center;
+    margin: 3rem 0;
+    text-shadow: 0 0 20px rgba(139,92,246,.5);
+    position: relative;
+}
+
+    h3::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(90deg,#8b5cf6,#3b82f6,#8b5cf6);
+    }
+
+/* action buttons */
+.btn {
+    border-radius: 0 !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+    padding: 12px 25px !important;
+    margin: 0 1rem 1rem 0 !important;
+    transition: background .3s,box-shadow .3s,transform .2s;
+    background: linear-gradient(45deg,#8b5cf6,#3b82f6) !important;
+    border: 2px solid #8b5cf6 !important;
+    box-shadow: 0 0 15px rgba(139,92,246,.3) !important;
+}
+
+    .btn:hover {
+        background: linear-gradient(45deg,#3b82f6,#8b5cf6) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 0 25px rgba(139,92,246,.5) !important;
+    }
+
+.btn-success {
+    background: linear-gradient(45deg,#28a745,#20c997) !important;
+    border-color: #28a745 !important;
+    box-shadow: 0 0 15px rgba(40,167,69,.3) !important;
+}
+
+    .btn-success:hover {
+        background: linear-gradient(45deg,#20c997,#28a745) !important;
+        box-shadow: 0 0 25px rgba(40,167,69,.5) !important;
+    }
+
+.btn-danger {
+    background: linear-gradient(45deg,#dc3545,#c82333) !important;
+    border: none !important;
+    box-shadow: 0 0 10px #c82333;
+}
+
+    .btn-danger:hover {
+        background: #b52a37 !important;
+    }
+
+/* Table Container */
+.table-responsive {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid #333333;
+    border-radius: 0;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.table {
+    background: transparent !important;
+    color: #fff !important;
+    margin-bottom: 0 !important;
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+    table-layout: auto !important;
+    width: 100% !important;
+}
+
+    .table th,
+    .table td {
+        border: none !important;
+        padding: 1.2rem 1rem !important;
+        vertical-align: middle !important;
+        text-align: left !important;
+        background: transparent !important;
+        color: #fff !important;
+        font-weight: 500 !important;
+    }
+
+.table-light {
+    background: linear-gradient(90deg, #6d28d9 0%, #3b82f6 100%) !important;
+    border-bottom: 2px solid #8b5cf6 !important;
+    position: relative;
+}
+
+    .table-light th {
+        color: #fff !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 2px !important;
+        font-size: 0.95rem !important;
+        border: none !important;
+        padding: 1.2rem 1rem !important;
+        background: transparent !important;
+        text-align: left !important;
+        vertical-align: middle !important;
+        text-shadow: 0 0 10px #8b5cf6;
+    }
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(80, 80, 120, 0.18) !important;
+}
+
+.table-striped > tbody > tr:nth-of-type(even) {
+    background-color: rgba(40, 40, 60, 0.22) !important;
+}
+
+.table-striped > tbody > tr:hover {
+    background-color: rgba(139, 92, 246, 0.18) !important;
+    box-shadow: 0 5px 20px rgba(139, 92, 246, 0.18);
+    transform: none !important;
+}
+
+.table tbody td:first-child,
+.table-light th:first-child {
+    text-align: center !important;
+    font-weight: 700 !important;
+    color: #8b5cf6 !important;
+    background: inherit !important;
+    padding: 1.2rem 0 !important;
+}
+
+.table tbody tr:hover td:first-child {
+    color: #fff !important;
+    background: rgba(139, 92, 246, 0.22) !important;
+}
+
+/* small buttons */
+.btn-sm {
+    padding: 6px 12px !important;
+    font-size: .8rem !important
+}
+
+/* responsive tweaks */
+@media(max-width:768px) {
+    h3 {
+        font-size: 2rem;
+        letter-spacing: 2px;
+        margin: 2rem 0
+    }
+
+    .table thead th {
+        padding: .75rem;
+        font-size: .8rem
+    }
+
+    .table tbody td {
+        padding: .75rem;
+        font-size: .9rem
+    }
+
+    .btn {
+        padding: 10px 20px;
+        font-size: .9rem;
+        margin-right: .5rem
+    }
+
+    .btn-sm {
+        padding: 4px 8px;
+        font-size: .7rem
+    }
+}
+
+@media(max-width:576px) {
+    h3 {
+        font-size: 1.8rem;
+        letter-spacing: 1px
+    }
+
+    .btn {
+        padding: 8px 16px;
+        font-size: .8rem;
+        margin-right: .25rem
+    }
+}
+
+/* custom scrollbar */
+::-webkit-scrollbar {
+    width: 10px
+}
+
+::-webkit-scrollbar-track {
+    background: #1a0a2e
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg,#8b5cf6,#3b82f6);
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(45deg,#3b82f6,#8b5cf6);
+    }
+
+.table tbody tr:nth-of-type(odd) {
+    background-color: rgba(80,80,120,.18) !important;
+}
+
+.table tbody tr:nth-of-type(even) {
+    background-color: rgba(40,40,60,.22) !important;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(139,92,246,.18) !important;
+    box-shadow: 0 5px 20px rgba(139,92,246,.18);
+}
+

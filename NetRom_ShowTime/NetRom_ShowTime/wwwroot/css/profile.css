@@ -1,0 +1,211 @@
+body {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 25%, #16213e 50%, #1a0a2e 75%, #0a0a0a 100%);
+    color: #ffffff;
+    font-family: 'Arial Black', 'Helvetica Bold', sans-serif;
+    min-height: 100vh;
+}
+
+/* Page Container */
+.page {
+    background: transparent;
+}
+
+/* Main Content */
+main {
+    background: transparent;
+}
+
+h3 {
+    font-size: 3rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: #8b5cf6;
+    text-align: center;
+    margin: 3rem 0;
+    text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+    position: relative;
+}
+
+/* Profile Card */
+.card {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid #333333 !important;
+    border-radius: 0 !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+    backdrop-filter: blur(10px) !important;
+    margin: 0 auto !important;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #8b5cf6, #3b82f6, #8b5cf6);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+    z-index: 2;
+}
+
+.card:hover::before {
+    transform: scaleX(1);
+}
+
+.card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.card:hover::after {
+    opacity: 1;
+}
+
+.card:hover {
+    transform: translateY(-10px) !important;
+    box-shadow: 0 15px 40px rgba(139, 92, 246, 0.2) !important;
+    border-color: #8b5cf6 !important;
+}
+
+/* Card Body */
+.card-body {
+    background: transparent !important;
+    padding: 2.5rem !important;
+    position: relative;
+    z-index: 1;
+}
+
+/* Card Title */
+.card-title {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+    font-size: 1.8rem !important;
+    margin-bottom: 2rem !important;
+    text-shadow: 0 0 10px rgba(139, 92, 246, 0.3) !important;
+    text-align: center !important;
+}
+
+/* Card Text */
+.card-text {
+    color: #cccccc !important;
+    line-height: 1.8 !important;
+    font-size: 1.1rem !important;
+    margin-bottom: 1.5rem !important;
+    padding: 0.5rem 0 !important;
+    border-bottom: 1px solid rgba(139, 92, 246, 0.2) !important;
+}
+
+.card-text:last-child {
+    border-bottom: none !important;
+}
+
+.card-text strong {
+    color: #8b5cf6 !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    font-size: 1rem !important;
+    margin-right: 0.5rem !important;
+}
+
+/* Loading and Empty States */
+p {
+    color: #cccccc !important;
+    text-align: center !important;
+    font-size: 1.2rem !important;
+    margin: 3rem 0 !important;
+}
+
+em {
+    color: #8b5cf6 !important;
+    font-style: normal !important;
+    font-weight: 600 !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    h3 {
+        font-size: 2rem;
+        letter-spacing: 2px;
+        margin: 2rem 0;
+    }
+    
+    .card-body {
+        padding: 2rem !important;
+    }
+    
+    .card-title {
+        font-size: 1.5rem !important;
+    }
+    
+    .card-text {
+        font-size: 1rem !important;
+    }
+}
+
+@media (max-width: 576px) {
+    h3 {
+        font-size: 1.8rem;
+        letter-spacing: 1px;
+    }
+    
+    .card-body {
+        padding: 1.5rem !important;
+    }
+    
+    .card-title {
+        font-size: 1.3rem !important;
+    }
+    
+    .card-text {
+        font-size: 0.95rem !important;
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1a0a2e;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, #8b5cf6, #3b82f6);
+    border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+}
+
+/* Animation for card on load */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeInUp 0.8s ease-out;
+} 

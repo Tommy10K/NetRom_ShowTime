@@ -12,6 +12,10 @@
 @inject IUserService UserService
 @inject NavigationManager NavigationManager
 
+<HeadContent>
+    <link rel="stylesheet" href="css/auth-login.css" />
+</HeadContent>
+
 <h3>Login</h3>
 
 <EditForm Model="newUser" OnValidSubmit="Authenticate" FormName="Login">

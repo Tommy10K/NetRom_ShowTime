@@ -1,0 +1,92 @@
+body {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 25%, #16213e 50%, #1a0a2e 75%, #0a0a0a 100%);
+    color: #fff;
+    font-family: 'Arial Black', 'Helvetica Bold', sans-serif;
+    min-height: 100vh;
+}
+.auth-container {
+    background: rgba(40, 30, 60, 0.60);
+    border: 2px solid #8b5cf6;
+    border-radius: 22px;
+    padding: 2.8rem 2.2rem 2.2rem 2.2rem;
+    margin: 4rem auto 2rem auto;
+    max-width: 480px;
+    box-shadow: 0 16px 48px 0 rgba(80, 40, 180, 0.22), 0 2px 0 #8b5cf6 inset;
+    backdrop-filter: blur(20px);
+}
+h3, .auth-title {
+    font-size: 2.4rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 3.5px;
+    color: #a084ee;
+    text-align: center;
+    margin-bottom: 2.2rem;
+    text-shadow: 0 0 24px #8b5cf6, 0 0 10px #3b82f6;
+}
+label {
+    color: #a084ee;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+input, select, textarea {
+    background: rgba(80, 80, 120, 0.22);
+    border: 2px solid #8b5cf6;
+    color: #fff;
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    font-size: 1.08rem;
+    margin-bottom: 1.3rem;
+    width: 100%;
+    font-weight: 600;
+    transition: border 0.3s, box-shadow 0.3s, background 0.3s;
+    box-shadow: 0 2px 8px #3b82f633;
+}
+input:focus, select:focus, textarea:focus {
+    border-color: #3b82f6;
+    background: rgba(80, 80, 120, 0.32);
+    box-shadow: 0 0 16px #8b5cf6, 0 0 4px #3b82f6;
+    outline: none;
+}
+button, .btn {
+    background: linear-gradient(90deg, #8b5cf6 0%, #3b82f6 100%);
+    border: none;
+    color: #fff;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-radius: 10px;
+    padding: 1rem 2.5rem;
+    margin-top: 1.2rem;
+    box-shadow: 0 0 18px #8b5cf6, 0 2px 8px #3b82f633;
+    transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+}
+button:hover, .btn:hover {
+    background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+    box-shadow: 0 0 32px #8b5cf6;
+    transform: translateY(-2px) scale(1.03);
+}
+.auth-link, a {
+    color: #8b5cf6;
+    text-decoration: underline;
+    transition: color 0.2s;
+    font-weight: 700;
+}
+.auth-link:hover, a:hover {
+    color: #3b82f6;
+    text-shadow: 0 0 8px #8b5cf6;
+}
+.error-message, .alert-danger {
+    color: #ff4d6d;
+    background: rgba(220, 53, 69, 0.13);
+    border-left: 5px solid #dc3545;
+    padding: 1rem 1.2rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    font-weight: 800;
+    text-align: center;
+    font-size: 1.08rem;
+    box-shadow: 0 2px 12px #dc354566;
+} 

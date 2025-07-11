@@ -10,6 +10,10 @@
 
 @attribute [Authorize(Roles = "Admin")]
 
+<HeadContent>
+    <link rel="stylesheet" href="css/admin-bookings.css" />
+</HeadContent>
+
 <h3>All Bookings</h3>
 
 @if (bookings == null)

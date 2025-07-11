@@ -1,0 +1,398 @@
+body {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 25%, #16213e 50%, #1a0a2e 75%, #0a0a0a 100%);
+    color: #ffffff;
+    font-family: 'Arial Black', 'Helvetica Bold', sans-serif;
+    min-height: 100vh;
+}
+
+/* Page Container */
+.page {
+    background: transparent;
+}
+
+/* Main Content */
+main {
+    background: transparent;
+}
+
+/* Hero Section for Admin Artists */
+h3 {
+    font-size: 3rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: #8b5cf6;
+    text-align: center;
+    margin: 3rem 0;
+    text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+    position: relative;
+}
+
+h3:first-of-type {
+    font-size: 2.5rem;
+    margin: 2rem 0 1.5rem 0;
+}
+
+/* Form Section */
+EditForm {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid #333333;
+    border-radius: 0;
+    padding: 2rem;
+    margin-bottom: 3rem;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Form Controls */
+.form-label {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    margin-bottom: 0.5rem !important;
+}
+
+label {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.form-control {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid #8b5cf6 !important;
+    color: #ffffff !important;
+    border-radius: 0 !important;
+    padding: 12px 16px !important;
+    font-weight: 600 !important;
+    letter-spacing: 1px !important;
+    transition: all 0.3s ease !important;
+}
+
+.form-control::placeholder {
+    color: #cccccc !important;
+    font-weight: 400 !important;
+}
+
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3) !important;
+    outline: none !important;
+}
+
+/* Validation Messages */
+.validation-message {
+    color: #ff6b6b !important;
+    font-size: 0.9rem !important;
+    margin-top: 0.25rem !important;
+    font-weight: 500 !important;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 0 !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+    padding: 12px 30px !important;
+    transition: all 0.3s ease !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #8b5cf6, #3b82f6) !important;
+    border: 2px solid #8b5cf6 !important;
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3) !important;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.5) !important;
+    background: linear-gradient(45deg, #3b82f6, #8b5cf6) !important;
+}
+
+.btn-secondary {
+    background: linear-gradient(45deg, #6c757d, #5a6268) !important;
+    border: 2px solid #6c757d !important;
+    box-shadow: 0 0 15px rgba(108, 117, 125, 0.3) !important;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 0 25px rgba(108, 117, 125, 0.5) !important;
+    background: linear-gradient(45deg, #5a6268, #6c757d) !important;
+}
+
+.btn-success {
+    background: linear-gradient(45deg, #28a745, #20c997) !important;
+    border: 2px solid #28a745 !important;
+    box-shadow: 0 0 15px rgba(40, 167, 69, 0.3) !important;
+}
+
+.btn-success:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 0 25px rgba(40, 167, 69, 0.5) !important;
+    background: linear-gradient(45deg, #20c997, #28a745) !important;
+}
+
+.btn-danger {
+    background: linear-gradient(45deg, #dc3545, #c82333) !important;
+    border: 2px solid #dc3545 !important;
+    box-shadow: 0 0 15px rgba(220, 53, 69, 0.3) !important;
+}
+
+.btn-danger:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 0 25px rgba(220, 53, 69, 0.5) !important;
+    background: linear-gradient(45deg, #c82333, #dc3545) !important;
+}
+
+.btn-sm {
+    padding: 6px 12px !important;
+    font-size: 0.8rem !important;
+}
+
+/* Search and Filter Section */
+.row.mb-2 {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid #333333;
+    border-radius: 0;
+    padding: 2rem;
+    margin-bottom: 3rem !important;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Artist Cards */
+.card {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid #333333 !important;
+    border-radius: 0 !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+    backdrop-filter: blur(10px) !important;
+    height: 100% !important;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #8b5cf6, #3b82f6, #8b5cf6);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+    z-index: 2;
+}
+
+.card:hover::before {
+    transform: scaleX(1);
+}
+
+.card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.card:hover::after {
+    opacity: 1;
+}
+
+.card:hover {
+    transform: translateY(-10px) !important;
+    box-shadow: 0 15px 40px rgba(139, 92, 246, 0.2) !important;
+    border-color: #8b5cf6 !important;
+}
+
+/* Card Images */
+.card-img-top {
+    transition: transform 0.3s ease !important;
+    filter: brightness(0.8) !important;
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.05) !important;
+    filter: brightness(1) !important;
+}
+
+/* Card Body */
+.card-body {
+    background: transparent !important;
+    padding: 1.5rem !important;
+    position: relative;
+    z-index: 1;
+}
+
+/* Card Title */
+.card-title {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+    font-size: 1.3rem !important;
+    margin-bottom: 1rem !important;
+    text-shadow: 0 0 10px rgba(139, 92, 246, 0.3) !important;
+}
+
+/* Card Text */
+.card-text {
+    color: #cccccc !important;
+    line-height: 1.6 !important;
+    font-size: 0.95rem !important;
+}
+
+.card-text.text-muted {
+    color: #8b5cf6 !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    font-size: 0.9rem !important;
+}
+
+/* Modal Styling */
+.modal-content {
+    background: rgba(26, 10, 46, 0.95) !important;
+    border: 1px solid #8b5cf6 !important;
+    border-radius: 0 !important;
+    backdrop-filter: blur(20px) !important;
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(139, 92, 246, 0.3) !important;
+    background: rgba(139, 92, 246, 0.1) !important;
+}
+
+.modal-title {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+}
+
+.modal-body {
+    background: transparent !important;
+}
+
+/* Loading and Empty States */
+p {
+    color: #cccccc !important;
+    text-align: center !important;
+    font-size: 1.1rem !important;
+    margin: 2rem 0 !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    h3 {
+        font-size: 2rem;
+        letter-spacing: 2px;
+        margin: 2rem 0;
+    }
+    
+    h3:first-of-type {
+        font-size: 1.8rem;
+        margin: 1.5rem 0 1rem 0;
+    }
+    
+    EditForm {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .row.mb-2 {
+        padding: 1.5rem;
+        margin-bottom: 2rem !important;
+    }
+    
+    .card-body {
+        padding: 1rem !important;
+    }
+    
+    .card-title {
+        font-size: 1.1rem !important;
+    }
+    
+    .btn {
+        padding: 10px 25px !important;
+        font-size: 0.9rem !important;
+    }
+}
+
+@media (max-width: 576px) {
+    h3 {
+        font-size: 1.8rem;
+        letter-spacing: 1px;
+    }
+    
+    h3:first-of-type {
+        font-size: 1.5rem;
+    }
+    
+    EditForm {
+        padding: 1rem;
+    }
+    
+    .row.mb-2 {
+        padding: 1rem;
+    }
+    
+    .form-control {
+        padding: 10px 12px !important;
+    }
+    
+    .btn {
+        padding: 8px 20px !important;
+        font-size: 0.8rem !important;
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1a0a2e;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, #8b5cf6, #3b82f6);
+    border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+}

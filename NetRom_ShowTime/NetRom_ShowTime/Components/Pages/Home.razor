@@ -1,7 +1,37 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+<PageTitle>NetRom ShowTime - Festival Experience</PageTitle>
 
-<h1>Hello, world!</h1>
+<HeadContent>
+    <link rel="stylesheet" href="css/home.css" />
+</HeadContent>
 
-Welcome to your new app.
+<div class="home-container">
+    <section class="hero-section">
+        <div class="hero-background"></div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">SHOWTIME</h1>
+                <div class="hero-divider"></div>
+                <p class="hero-subtitle">WHERE LEGENDS MEET THE STAGE</p>
+                <p class="hero-description">
+                    Experience the raw energy of live music, the intensity of crowd passion,
+                    and the electric atmosphere that only the world's greatest festivals can deliver.
+                    This is where memories are forged in fire and sound.
+                </p>
+            </div>
+        </div>
+        <div class="hero-scroll-indicator">
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="cta-background"></div>
+        <div class="cta-content">
+            <h2 class="cta-title">READY TO ENTER THE REALM?</h2>
+            <p class="cta-description">Join thousands of music warriors in the ultimate festival experience</p>
+            <NavLink href="/festivals" class="btn btn-cta">EXPLORE FESTIVALS</NavLink>
+        </div>
+    </section>
+</div>

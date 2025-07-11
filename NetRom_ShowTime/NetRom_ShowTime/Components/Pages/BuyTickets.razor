@@ -18,6 +18,10 @@
 
 @attribute [Authorize(Roles = "User,Admin")]
 
+<HeadContent>
+    <link rel="stylesheet" href="css/buytickets.css" />
+</HeadContent>
+
 @if (!ticketTypes.Any())
 {
     <p>No tickets available for purchase yet.</p>

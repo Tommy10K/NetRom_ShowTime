@@ -9,6 +9,10 @@
 
 @attribute [Authorize(Roles = "User,Admin")]
 
+<HeadContent>
+    <link rel="stylesheet" href="css/artists.css" />
+</HeadContent>
+
 <h3>Artists</h3>
 
 @if (artists == null)

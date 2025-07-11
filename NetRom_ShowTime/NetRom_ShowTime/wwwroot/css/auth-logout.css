@@ -1,0 +1,86 @@
+body {
+    background: linear-gradient(135deg,#0a0a0a 0%,#1a0a2e 25%,#16213e 50%,#1a0a2e 75%,#0a0a0a 100%);
+    color: #fff;
+    font-family: 'Arial Black','Helvetica Bold',sans-serif;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.auth-container {
+    background: rgba(40,30,60,.6);
+    border: 2px solid #8b5cf6;
+    border-radius: 22px;
+    padding: 2.8rem 2.2rem 2.2rem;
+    margin: 5rem auto 2rem;
+    max-width: 420px;
+    box-shadow: 0 16px 48px rgba(80,40,180,.22),0 2px 0 #8b5cf6 inset;
+    backdrop-filter: blur(20px);
+    text-align: center;
+}
+
+h3,
+.auth-title {
+    font-size: 2.4rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 3.5px;
+    color: #a084ee;
+    margin: 0 0 2.2rem 0;
+}
+
+p,
+.auth-message {
+    color: #a084ee;
+    font-size: 1.1rem;
+    margin: 2rem 0 1rem;
+}
+
+button,
+.btn {
+    display: inline-block;
+    border: none;
+    color: #fff;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-radius: 10px;
+    padding: 1rem 2.5rem;
+    margin: 1.2rem .75rem 0;
+    background: linear-gradient(90deg,#8b5cf6 0%,#3b82f6 100%);
+    box-shadow: 0 0 18px #8b5cf6,0 2px 8px #3b82f633;
+    transition: background .3s,box-shadow .3s,transform .2s;
+    cursor: pointer;
+}
+
+    button:hover,
+    .btn:hover {
+        background: linear-gradient(90deg,#3b82f6 0%,#8b5cf6 100%);
+        box-shadow: 0 0 32px #8b5cf6;
+        transform: translateY(-2px) scale(1.03);
+    }
+
+    button:first-of-type,
+    .btn:first-of-type {
+        background: linear-gradient(90deg,#ff4d4d 0%,#ff6b6b 100%);
+        box-shadow: 0 0 18px #ff4d4d,0 2px 8px #ff6b6b33;
+    }
+
+        button:first-of-type:hover,
+        .btn:first-of-type:hover {
+            background: linear-gradient(90deg,#ff6b6b 0%,#ff4d4d 100%);
+            box-shadow: 0 0 32px #ff4d4d;
+        }
+
+.auth-link,
+a {
+    color: #8b5cf6;
+    text-decoration: underline;
+    font-weight: 700;
+    transition: color .2s;
+}
+
+    .auth-link:hover,
+    a:hover {
+        color: #3b82f6;
+        text-shadow: 0 0 8px #8b5cf6;
+    }

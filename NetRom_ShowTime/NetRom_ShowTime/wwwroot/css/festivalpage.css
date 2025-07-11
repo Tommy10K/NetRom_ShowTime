@@ -1,0 +1,204 @@
+body {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 25%, #16213e 50%, #1a0a2e 75%, #0a0a0a 100%);
+    color: #ffffff;
+    font-family: 'Arial Black', 'Helvetica Bold', sans-serif;
+    min-height: 100vh;
+}
+
+/* Page Container */
+.page,
+main {
+    background: transparent;
+}
+
+/* Festival Details Cards */
+.card {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid #333333 !important;
+    border-radius: 0 !important;
+    position: relative !important;
+    overflow: hidden !important;
+    backdrop-filter: blur(10px) !important;
+    height: 100% !important;
+}
+
+/* Card Images */
+.card-img-top {
+    filter: brightness(0.8) !important;
+}
+
+/* Card Body */
+.card-body {
+    background: transparent !important;
+    padding: 2rem !important;
+    position: relative;
+    z-index: 1;
+}
+
+/* Card Title */
+.card-title {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+    font-size: 2rem !important;
+    margin-bottom: 1.5rem !important;
+    text-shadow: 0 0 10px rgba(139, 92, 246, 0.3) !important;
+}
+
+/* Card Text */
+.card-text {
+    color: #cccccc !important;
+    line-height: 1.6 !important;
+    font-size: 1rem !important;
+    margin-bottom: 1rem !important;
+}
+
+    .card-text strong {
+        color: #8b5cf6 !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+        font-size: 0.95rem !important;
+    }
+
+/* Buttons (Static Styles) */
+.btn {
+    border-radius: 0 !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+    padding: 12px 25px !important;
+    transition: all 0.3s ease !important;
+    position: relative;
+    overflow: hidden;
+    margin-right: 1rem !important;
+    margin-bottom: 1rem !important;
+}
+
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn:hover::before {
+        left: 100%;
+    }
+
+.btn-secondary {
+    background: linear-gradient(45deg, #6c757d, #5a6268) !important;
+    border: 2px solid #6c757d !important;
+    box-shadow: 0 0 15px rgba(108, 117, 125, 0.3) !important;
+}
+
+    .btn-secondary:hover {
+        transform: translateY(-3px) !important;
+        box-shadow: 0 0 25px rgba(108, 117, 125, 0.5) !important;
+        background: linear-gradient(45deg, #5a6268, #6c757d) !important;
+    }
+
+.btn-success {
+    background: linear-gradient(45deg, #28a745, #20c997) !important;
+    border: 2px solid #28a745 !important;
+    box-shadow: 0 0 15px rgba(40, 167, 69, 0.3) !important;
+}
+
+    .btn-success:hover {
+        transform: translateY(-3px) !important;
+        box-shadow: 0 0 25px rgba(40, 167, 69, 0.5) !important;
+        background: linear-gradient(45deg, #20c997, #28a745) !important;
+    }
+
+/* Lineup Section */
+h4 {
+    font-size: 2.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #8b5cf6;
+    text-align: center;
+    margin: 3rem 0 2rem 0;
+    text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+    position: relative;
+}
+
+/* Loading and Empty States */
+p {
+    color: #cccccc !important;
+    text-align: center !important;
+    font-size: 1.1rem !important;
+    margin: 2rem 0 !important;
+}
+
+em {
+    color: #8b5cf6 !important;
+    font-style: normal !important;
+    font-weight: 600 !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1.5rem !important;
+    }
+
+    .card-title {
+        font-size: 1.5rem !important;
+    }
+
+    h4 {
+        font-size: 2rem;
+        letter-spacing: 2px;
+    }
+
+    .btn {
+        padding: 10px 20px !important;
+        font-size: 0.9rem !important;
+        margin-right: 0.5rem !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .card-body {
+        padding: 1rem !important;
+    }
+
+    .card-title {
+        font-size: 1.3rem !important;
+    }
+
+    h4 {
+        font-size: 1.8rem;
+        letter-spacing: 1px;
+    }
+
+    .btn {
+        padding: 8px 16px !important;
+        font-size: 0.8rem !important;
+        margin-right: 0.25rem !important;
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1a0a2e;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, #8b5cf6, #3b82f6);
+    border-radius: 0;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+    }

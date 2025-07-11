@@ -1,0 +1,408 @@
+
+/* Table Container */
+.table-responsive {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid #333333;
+    border-radius: 0;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.table-responsive::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #8b5cf6, #3b82f6, #8b5cf6);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.table-responsive:hover::before {
+    transform: scaleX(1);
+}
+
+.table-responsive::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(139, 92, 246, 0.05) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.table-responsive:hover::after {
+    opacity: 1;
+}
+
+/* Table Base Styling */
+.table {
+    background: transparent !important;
+    color: #ffffff !important;
+    margin-bottom: 0 !important;
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+    position: relative;
+    z-index: 1;
+    table-layout: auto !important;
+    width: 100% !important;
+}
+
+.table th,
+.table td {
+    border: none !important;
+    padding: 1.2rem 1rem !important;
+    vertical-align: middle !important;
+    text-align: left !important;
+}
+
+/* Table Header */
+.table-light {
+    background: rgba(139, 92, 246, 0.15) !important;
+    border-bottom: 2px solid #8b5cf6 !important;
+    position: relative;
+}
+
+.table-light::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #8b5cf6, transparent);
+    opacity: 0.5;
+}
+
+.table-light th {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+    font-size: 0.9rem !important;
+    border: none !important;
+    padding: 1.2rem 1rem !important;
+    text-shadow: 0 0 10px rgba(139, 92, 246, 0.3) !important;
+    position: relative;
+    transition: all 0.3s ease;
+    background: rgba(139, 92, 246, 0.1) !important;
+    text-align: left !important;
+    vertical-align: middle !important;
+}
+
+.table-light th:hover {
+    background: rgba(139, 92, 246, 0.2) !important;
+    text-shadow: 0 0 15px rgba(139, 92, 246, 0.5) !important;
+}
+
+.table-light th::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #8b5cf6, transparent);
+    opacity: 0.5;
+}
+
+/* Table Body */
+.table tbody tr {
+    border-bottom: 1px solid rgba(139, 92, 246, 0.2) !important;
+    transition: all 0.4s ease !important;
+    position: relative;
+    cursor: pointer;
+}
+
+.table tbody tr::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, #8b5cf6, #3b82f6);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.table tbody tr:hover::before {
+    opacity: 1;
+}
+
+.table tbody tr::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.table tbody tr:hover::after {
+    opacity: 1;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(100, 100, 100, 0.1) !important;
+}
+
+.table-striped > tbody > tr:nth-of-type(even) {
+    background-color: rgba(120, 120, 120, 0.1) !important;
+}
+
+.table-striped > tbody > tr:hover {
+    background-color: rgba(139, 92, 246, 0.15) !important;
+    transform: translateX(5px) scale(1.01);
+    box-shadow: 0 5px 20px rgba(139, 92, 246, 0.3);
+}
+
+.table tbody td {
+    color: #cccccc !important;
+    padding: 1.2rem 1rem !important;
+    border: none !important;
+    vertical-align: middle !important;
+    font-weight: 500 !important;
+    position: relative;
+    transition: all 0.3s ease;
+    background: rgba(80, 80, 80, 0.05) !important;
+    text-align: left !important;
+}
+
+.table tbody td:first-child {
+    color: #8b5cf6 !important;
+    font-weight: 700 !important;
+    font-size: 1.1rem !important;
+}
+
+.table tbody tr:hover td {
+    color: #ffffff !important;
+    text-shadow: 0 0 5px rgba(139, 92, 246, 0.3);
+    background: rgba(139, 92, 246, 0.1) !important;
+}
+
+/* Table without stripes */
+.table:not(.table-striped) tbody tr {
+    background-color: rgba(80, 80, 80, 0.05) !important;
+}
+
+.table:not(.table-striped) tbody tr:hover {
+    background-color: rgba(139, 92, 246, 0.1) !important;
+    transform: translateX(5px) scale(1.01);
+    box-shadow: 0 5px 20px rgba(139, 92, 246, 0.3);
+}
+
+/* Buttons in tables */
+.table .btn {
+    border-radius: 0 !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    transition: all 0.3s ease !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.table .btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.table .btn:hover::before {
+    left: 100%;
+}
+
+.table .btn-sm {
+    padding: 6px 12px !important;
+    font-size: 0.8rem !important;
+}
+
+.table .btn-primary {
+    background: linear-gradient(45deg, #8b5cf6, #3b82f6) !important;
+    border: 2px solid #8b5cf6 !important;
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.3) !important;
+}
+
+.table .btn-primary:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 0 25px rgba(139, 92, 246, 0.5) !important;
+    background: linear-gradient(45deg, #3b82f6, #8b5cf6) !important;
+}
+
+.table .btn-danger {
+    background: linear-gradient(45deg, #dc3545, #c82333) !important;
+    border: 2px solid #dc3545 !important;
+    box-shadow: 0 0 15px rgba(220, 53, 69, 0.3) !important;
+}
+
+.table .btn-danger:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 0 25px rgba(220, 53, 69, 0.5) !important;
+    background: linear-gradient(45deg, #c82333, #dc3545) !important;
+}
+
+.table .btn-success {
+    background: linear-gradient(45deg, #28a745, #20c997) !important;
+    border: 2px solid #28a745 !important;
+    box-shadow: 0 0 15px rgba(40, 167, 69, 0.3) !important;
+}
+
+.table .btn-success:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 0 25px rgba(40, 167, 69, 0.5) !important;
+    background: linear-gradient(45deg, #20c997, #28a745) !important;
+}
+
+/* Links in tables */
+.table a {
+    color: #8b5cf6 !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease !important;
+    position: relative;
+}
+
+.table a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #8b5cf6, #3b82f6);
+    transition: width 0.3s ease;
+}
+
+.table a:hover {
+    color: #3b82f6 !important;
+    text-shadow: 0 0 5px rgba(139, 92, 246, 0.5);
+}
+
+.table a:hover::after {
+    width: 100%;
+}
+
+/* Empty state styling */
+.table tbody tr:only-child td {
+    text-align: center;
+    padding: 3rem 1rem !important;
+    color: #8b5cf6 !important;
+    font-style: italic;
+    font-size: 1.1rem;
+}
+
+/* Responsive table adjustments */
+@media (max-width: 768px) {
+    .table-responsive {
+        padding: 1rem;
+    }
+    
+    .table tbody td {
+        padding: 0.75rem 0.5rem !important;
+        font-size: 0.9rem !important;
+    }
+    
+    .table-light th {
+        padding: 0.75rem 0.5rem !important;
+        font-size: 0.8rem !important;
+    }
+    
+    .table .btn-sm {
+        padding: 4px 8px !important;
+        font-size: 0.7rem !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .table-responsive {
+        padding: 0.5rem;
+    }
+    
+    .table tbody td {
+        padding: 0.5rem 0.25rem !important;
+        font-size: 0.8rem !important;
+    }
+    
+    .table-light th {
+        padding: 0.5rem 0.25rem !important;
+        font-size: 0.7rem !important;
+    }
+}
+
+/* Animation for table rows on load */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.table tbody tr {
+    animation: slideInLeft 0.6s ease-out;
+}
+
+.table tbody tr:nth-child(1) { animation-delay: 0.1s; }
+.table tbody tr:nth-child(2) { animation-delay: 0.2s; }
+.table tbody tr:nth-child(3) { animation-delay: 0.3s; }
+.table tbody tr:nth-child(4) { animation-delay: 0.4s; }
+.table tbody tr:nth-child(5) { animation-delay: 0.5s; }
+.table tbody tr:nth-child(6) { animation-delay: 0.6s; }
+
+/* Table loading state */
+.table-loading {
+    position: relative;
+    min-height: 200px;
+}
+
+.table-loading::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(139, 92, 246, 0.3);
+    border-top: 3px solid #8b5cf6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+} 
